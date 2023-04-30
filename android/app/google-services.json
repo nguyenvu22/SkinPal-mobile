@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "860566996706",
+    "project_id": "exe-skinpal",
+    "storage_bucket": "exe-skinpal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860566996706:android:536abc546d2d7b9dee40bb",
+        "android_client_info": {
+          "package_name": "com.example.skinpal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860566996706-ica02a146rla0u42k8e2nt68ge0gv83i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxAhveZxIqwc7fqdxxWFqkKi9SmVfvvI4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860566996706-ica02a146rla0u42k8e2nt68ge0gv83i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
