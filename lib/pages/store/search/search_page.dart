@@ -131,14 +131,12 @@ class _SearchPageState extends State<SearchPage> {
                           ),
                           ...List<Widget>.generate(
                             widget.con.categories.length,
-                            (index) {
-                              return Tab(
-                                child: Text(
-                                  widget.con.categories[index].name ?? '',
-                                  style: GoogleFonts.robotoSlab(),
-                                ),
-                              );
-                            },
+                            (index) => Tab(
+                              child: Text(
+                                widget.con.categories[index].name ?? '',
+                                style: GoogleFonts.robotoSlab(),
+                              ),
+                            ),
                           ),
                         ],
                       ),

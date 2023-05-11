@@ -109,7 +109,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     child: CircleAvatar(
-                      backgroundColor: Colors.black12,
+                      backgroundColor: Colors.white,
                       backgroundImage: con.userSession.value.avatar != null
                           ? NetworkImage(
                               con.userSession.value.avatar!,
