@@ -19,9 +19,6 @@ class StoreController extends GetxController {
       } else {
         productInCart = Product.fromJsonList(GetStorage().read('shoppingCart'));
       }
-      // for (var p in productInCart) {
-      //   itemCounter.value += p.quantity!;
-      // }
       countItem(productInCart);
     }
   }

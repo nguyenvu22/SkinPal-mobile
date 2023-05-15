@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:skinpal/models/user.dart';
 import 'package:skinpal/pages/store/cart/cart_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:skinpal/providers/orders_provider.dart';
+import 'package:async/async.dart';
 
 class CheckoutController extends GetxController {
   TextEditingController phoneController = TextEditingController();
@@ -20,8 +22,8 @@ class CheckoutController extends GetxController {
 
   List<Product> productInCart = [];
   double totalPrice = 0.0;
-  var isPayment = false.obs;
-  var isComplete = false.obs;
+  var isPhoneComplete = false.obs;
+  var isAddressComplete = false.obs;
 
   Map<String, dynamic>? paymentIntentData;
 
@@ -42,18 +44,6 @@ class CheckoutController extends GetxController {
     countTotal();
   }
 
-  void test() async {
-    Order takeOrder = Order(
-      status: 0,
-      totalPrice: totalPrice,
-      address: addressController.text,
-      phone: phoneController.text.trim(),
-      idUser: userSession.id,
-    );
-
-    ResponseApi resOrder = await ordersProvider.createOrder(takeOrder);
-  }
-
   void countTotal() {
     totalPrice = 0;
     for (var p in productInCart) {
@@ -61,8 +51,51 @@ class CheckoutController extends GetxController {
     }
   }
 
-  void paymentSuccess() async {
+  Future<void> makePayment(context, pageController) async {
+    try {
+      paymentIntentData = await createPaymentIntent(totalPrice.toInt(), 'USD');
+      await Stripe.instance
+          .initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntentData!['client_secret'],
+              applePay: true,
+              googlePay: true,
+              // testEnv: true,
+              style: ThemeMode.dark,
+              merchantCountryCode: 'US',
+              merchantDisplayName: 'NguynVuu',
+            ),
+          )
+          .then((value) {});
+
+      // Using await
+      // // Payment
+      // await showPaymentSheet(context);
+      // // Take Order
+      // await paymentSuccess();
+      // pageController.nextPage(
+      //   duration: const Duration(milliseconds: 500),
+      //   curve: Curves.easeInOut,
+      // );
+
+      // Using .then func
+      showPaymentSheet(context).then((_) {
+        paymentSuccess().then((_) {
+          pageController.nextPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      });
+    } catch (err) {
+      print("Error: $err");
+    }
+  }
+
+  paymentSuccess() async {
     DialogHelper.showLoading("Preparing your order...");
+
+    await Future.delayed(const Duration(seconds: 1));
 
     Order takeOrder = Order(
       status: 0,
@@ -73,7 +106,6 @@ class CheckoutController extends GetxController {
     );
 
     ResponseApi resOrder = await ordersProvider.createOrder(takeOrder);
-    print("resOrder : ${resOrder.toJson()}");
 
     if (resOrder.success == true) {
       for (var product in productInCart) {
@@ -91,10 +123,7 @@ class CheckoutController extends GetxController {
               color: Colors.redAccent,
             ),
           );
-          isComplete.value = false;
-          return;
-        } else {
-          isComplete.value = true;
+          // return;
         }
       }
 
@@ -111,140 +140,42 @@ class CheckoutController extends GetxController {
           color: Colors.redAccent,
         ),
       );
-      isComplete.value = false;
-      return;
+      // return;
     }
     DialogHelper.hideLoading();
-  }
-
-  void paymentProcess(context) {
-    String phone = phoneController.text.trim();
-    String address = addressController.text;
-    if (!checkValid(phone, address)) {
-      isComplete.value = false;
-      return;
-    }
-    makePayment(context);
-    // isComplete.value = true;
-  }
-
-  Future<bool> makePayment(context) async {
-    try {
-      paymentIntentData = await createPaymentIntent(totalPrice.toInt(), 'USD');
-      await Stripe.instance
-          .initPaymentSheet(
-            paymentSheetParameters: SetupPaymentSheetParameters(
-              paymentIntentClientSecret: paymentIntentData!['client_secret'],
-              applePay: true,
-              googlePay: true,
-              // testEnv: true,
-              style: ThemeMode.dark,
-              merchantCountryCode: 'US',
-              merchantDisplayName: 'NguynVuu',
-            ),
-          )
-          .then((value) {});
-
-      showPaymentSheet(context);
-      return true;
-    } on StripeException catch (err) {
-      if (err.error.localizedMessage == 'The payment flow has been canceled') {
-        // Handle the case where the user canceled the payment process
-        print('Payment was canceled by the user.');
-      } else {
-        // Handle other Stripe exceptions
-        print('Stripe exception occurred: ${err.error.localizedMessage}');
-      }
-      return false;
-    } catch (err) {
-      print("Error: $err");
-      return false;
-    }
   }
 
   showPaymentSheet(context) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                    ),
-                    Expanded(
-                      child: Text(
-                        "Payment Successfully",
-                        style: GoogleFonts.robotoSlab(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        );
-        paymentIntentData = null;
-        isPayment.value = true;
-
-        //===================================================
-        // Order takeOrder = Order(
-        //   status: 0,
-        //   totalPrice: totalPrice,
-        //   address: addressController.text,
-        //   phone: phoneController.text.trim(),
-        //   idUser: userSession.id,
-        // );
-
-        // ResponseApi resOrder = await ordersProvider.createOrder(takeOrder);
-        // print("resOrder : ${resOrder.toJson()}");
-
-        // if (resOrder.success == true) {
-        //   for (var product in productInCart) {
-        //     ResponseApi resOrderDetail = await ordersProvider.createOrderDetail(
-        //         resOrder.data, product.id!, product.quantity!);
-
-        //     if (resOrderDetail.success == false) {
-        //       Get.snackbar(
-        //         "Something went wrong!",
-        //         "Can not take your order",
-        //         borderWidth: 1,
-        //         borderColor: Colors.redAccent,
-        //         icon: const Icon(
-        //           Icons.error,
-        //           color: Colors.redAccent,
-        //         ),
-        //       );
-        //       isComplete.value = false;
-        //       return;
-        //     }
-        //   }
-
-        //   // clear storage
-        //   GetStorage().remove("shoppingCart");
-        // }
-        // else {
-        //   isComplete.value = false;
-        //   Get.snackbar(
-        //     "Something went wrong!",
-        //     "Can not take your order",
-        //     borderWidth: 1,
-        //     borderColor: Colors.redAccent,
-        //     icon: const Icon(
-        //       Icons.error,
-        //       color: Colors.redAccent,
+        // showDialog(
+        //   context: context,
+        //   builder: (_) => AlertDialog(
+        //     content: Column(
+        //       mainAxisSize: MainAxisSize.min,
+        //       children: [
+        //         Row(
+        //           children: [
+        //             const Icon(
+        //               Icons.check_circle,
+        //               color: Colors.green,
+        //             ),
+        //             Expanded(
+        //               child: Text(
+        //                 "Payment Successfully",
+        //                 textAlign: TextAlign.end,
+        //                 style: GoogleFonts.robotoSlab(
+        //                   fontWeight: FontWeight.w500,
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         )
+        //       ],
         //     ),
-        //   );
-        //   return;
-        // }
-        //===================================================
+        //   ),
+        // );
+        paymentIntentData = null;
       }).onError((error, stackTrace) {
         print("Error at transaction part : $error - $stackTrace");
       });
@@ -283,61 +214,78 @@ class CheckoutController extends GetxController {
     }
   }
 
-  bool checkValid(String phone, String address) {
-    if (phone.isEmpty) {
-      Get.snackbar(
-        "Missing information!",
-        "Please fill your phone number for ordering",
-        borderWidth: 1,
-        borderColor: Colors.redAccent,
-        icon: const Icon(
-          Icons.error,
-          color: Colors.redAccent,
-        ),
-      );
-      return false;
-    }
-    if (phone.length < 10) {
-      Get.snackbar(
-        "Missing information!",
-        "Phone number is invalid",
-        borderWidth: 1,
-        borderColor: Colors.redAccent,
-        icon: const Icon(
-          Icons.error,
-          color: Colors.redAccent,
-        ),
-      );
-      return false;
-    }
-    if (!phone.isPhoneNumber) {
-      Get.snackbar(
-        "Missing information!",
-        "Phone number is invalid",
-        borderWidth: 1,
-        borderColor: Colors.redAccent,
-        icon: const Icon(
-          Icons.error,
-          color: Colors.redAccent,
-        ),
-      );
-      return false;
-    }
-    if (address.isEmpty) {
-      Get.snackbar(
-        "Missing information!",
-        "Please fill your address for ordering",
-        borderWidth: 1,
-        borderColor: Colors.redAccent,
-        icon: const Icon(
-          Icons.error,
-          color: Colors.redAccent,
-        ),
-      );
-      return false;
-    }
+  CancelableOperation<void>? _debounceOperationPhone;
+  void checkPhoneValid(newPhone) {
+    _debounceOperationPhone?.cancel();
+    _debounceOperationPhone = CancelableOperation.fromFuture(
+      Future.delayed(const Duration(seconds: 2)),
+    );
+    _debounceOperationPhone!.value.then((_) {
+      if (newPhone.isEmpty) {
+        Get.snackbar(
+          "Missing information!",
+          "Please fill your phone number for ordering",
+          borderWidth: 1,
+          borderColor: Colors.redAccent,
+          icon: const Icon(
+            Icons.error,
+            color: Colors.redAccent,
+          ),
+        );
+        isPhoneComplete.value = false;
+      } else if (newPhone.length != 10) {
+        Get.snackbar(
+          "Missing information!",
+          "Phone number is invalid",
+          borderWidth: 1,
+          borderColor: Colors.redAccent,
+          icon: const Icon(
+            Icons.error,
+            color: Colors.redAccent,
+          ),
+        );
+        isPhoneComplete.value = false;
+      } else if (int.tryParse(newPhone) == null) {
+        Get.snackbar(
+          "Missing information!",
+          "Phone number is invalid",
+          borderWidth: 1,
+          borderColor: Colors.redAccent,
+          icon: const Icon(
+            Icons.error,
+            color: Colors.redAccent,
+          ),
+        );
+        isPhoneComplete.value = false;
+      } else {
+        isPhoneComplete.value = true;
+      }
+    });
+  }
 
-    return true;
+  CancelableOperation<void>? _debounceOperationAddress;
+  void checkAddressValid(newAddress) {
+    _debounceOperationAddress?.cancel();
+    _debounceOperationAddress = CancelableOperation.fromFuture(
+      Future.delayed(const Duration(seconds: 2)),
+    );
+    _debounceOperationAddress!.value.then((_) {
+      if (newAddress.isEmpty) {
+        Get.snackbar(
+          "Missing information!",
+          "Please fill your address for ordering",
+          borderWidth: 1,
+          borderColor: Colors.redAccent,
+          icon: const Icon(
+            Icons.error,
+            color: Colors.redAccent,
+          ),
+        );
+        isAddressComplete.value = false;
+      } else {
+        isAddressComplete.value = true;
+      }
+    });
   }
 
   void goToHomePage() {

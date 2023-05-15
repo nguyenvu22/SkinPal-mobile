@@ -8,6 +8,7 @@ import 'package:skinpal/models/category.dart';
 import 'package:skinpal/models/product.dart';
 import 'package:skinpal/pages/store/search/search_controller.dart';
 import 'package:skinpal/widgets/no_data_widget.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 
 class SearchPage extends StatefulWidget {
   SearchPage({super.key});
@@ -57,7 +58,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
           prefixIcon: const Icon(
             Icons.search,
-            // color: AppColor.secondaryColor,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(50),
@@ -233,45 +233,6 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   ],
-                  // widget.con.categories
-                  //     .map((Category category) => FutureBuilder(
-                  //           future: widget.con.getProducts(category.id ?? 0),
-                  //           builder:
-                  //               (context, AsyncSnapshot<List<Product>> snapshot) {
-                  //             if (snapshot.hasData) {
-                  //               if (snapshot.data!.isNotEmpty) {
-                  //                 return GridView.builder(
-                  //                   gridDelegate:
-                  //                       const SliverGridDelegateWithFixedCrossAxisCount(
-                  //                     crossAxisCount: 2,
-                  //                     crossAxisSpacing: 25,
-                  //                     mainAxisSpacing: 35,
-                  //                     mainAxisExtent: 270,
-                  //                   ),
-                  //                   shrinkWrap: true,
-                  //                   physics: const NeverScrollableScrollPhysics(),
-                  //                   itemCount: snapshot.data!.length,
-                  //                   padding: const EdgeInsets.only(
-                  //                     left: 15,
-                  //                     right: 15,
-                  //                     top: 30,
-                  //                   ),
-                  //                   itemBuilder: (_, index) =>
-                  //                       _buildProductItem(snapshot.data![index]),
-                  //                 );
-                  //               } else {
-                  //                 return NoDataWidget(
-                  //                   text: '0 item was found',
-                  //                 );
-                  //               }
-                  //             } else {
-                  //               return NoDataWidget(
-                  //                 text: '0 item was found',
-                  //               );
-                  //             }
-                  //           },
-                  //         ))
-                  //     .toList(),
                 ),
               ),
             ],
@@ -369,9 +330,13 @@ class _SearchPageState extends State<SearchPage> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              const FaIcon(
-                FontAwesomeIcons.cartShopping,
-                size: 20,
+              Bounce(
+                duration: const Duration(milliseconds: 200),
+                onPressed: () => widget.con.addToCart(product),
+                child: const FaIcon(
+                  FontAwesomeIcons.cartShopping,
+                  size: 24,
+                ),
               ),
             ],
           ),

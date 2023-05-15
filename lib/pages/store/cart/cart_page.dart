@@ -51,7 +51,7 @@ class _CartPageState extends State<CartPage> {
               SizedBox(
                 height: h * 0.05,
               ),
-              _buildCheckout(),
+              _buildCheckout(w, h),
             ],
           ),
         ),
@@ -98,9 +98,13 @@ class _CartPageState extends State<CartPage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(120),
-                border: Border.all(
-                  width: 1,
-                ),
+                boxShadow: const [
+                  BoxShadow(
+                    spreadRadius: 1,
+                    blurRadius: 15,
+                    color: Colors.black12,
+                  ),
+                ],
               ),
               clipBehavior: Clip.hardEdge,
               child: ClipRRect(
@@ -208,7 +212,7 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  Widget _buildCheckout() {
+  Widget _buildCheckout(w, h) {
     return Container(
       width: double.infinity,
       height: 60,
@@ -224,45 +228,55 @@ class _CartPageState extends State<CartPage> {
             ),
           ),
           Container(
-            width: 250,
+            width: w * 0.6,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: AppColor.coreColor,
-                width: 2,
-              ),
+              border: widget.con.productInCart.isNotEmpty
+                  ? Border.all(
+                      color: AppColor.coreColor,
+                      width: 2,
+                    )
+                  : null,
             ),
             child: Row(
               children: [
+                widget.con.productInCart.isNotEmpty
+                    ? Flexible(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            widget.con.productInCart.isNotEmpty
+                                ? "\$${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}"
+                                : "",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(),
                 Expanded(
                   child: Container(
                     height: double.infinity,
                     alignment: Alignment.center,
-                    child: Text(
-                      "\$${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}",
-                      style: GoogleFonts.robotoSlab(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                      ),
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    decoration: BoxDecoration(
+                      color: widget.con.productInCart.isNotEmpty
+                          ? AppColor.coreColor
+                          : AppColor.secondaryColor,
+                      borderRadius: BorderRadius.circular(18),
                     ),
-                  ),
-                ),
-                Container(
-                  height: double.infinity,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  decoration: BoxDecoration(
-                    color: AppColor.coreColor,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: GestureDetector(
-                    onTap: () => widget.con.goToCheckout(),
-                    child: Text(
-                      "Buy now",
-                      style: GoogleFonts.robotoSlab(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w400,
+                    child: GestureDetector(
+                      onTap: () => widget.con.goToCheckout(),
+                      child: Text(
+                        "Buy now",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.robotoSlab(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ),

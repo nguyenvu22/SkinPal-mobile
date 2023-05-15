@@ -181,7 +181,7 @@ class LoginPage extends StatelessWidget {
         contentPadding: const EdgeInsets.all(20),
         suffixIcon: IconButton(
           onPressed: () {
-            con.emailController.clear();
+            con.passwordController.clear();
           },
           icon: const FaIcon(FontAwesomeIcons.xmark),
         ),

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:skinpal/environment/environment.dart';
 import 'package:skinpal/models/product.dart';
+import 'package:skinpal/models/response_api.dart';
 import 'package:skinpal/models/user.dart';
 
 class ProductsProvider extends GetConnect {
@@ -64,5 +65,50 @@ class ProductsProvider extends GetConnect {
     }
     List<Product> listData = Product.fromJsonList(response.body);
     return listData;
+  }
+
+  Future<List<Product>> getAllFavorite() async {
+    Response response = await get(
+      "$url/favoriteProducts/${userSession.id}",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    if (response.body == null) {
+      return [];
+    }
+    List<Product> listData = Product.fromJsonList(response.body);
+    return listData;
+  }
+
+  Future<ResponseApi> addFavorite(int idProduct) async {
+    Response response = await post(
+      "$url/favoriteAdditional",
+      {
+        "idUser": userSession.id,
+        "idProduct": idProduct,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    ResponseApi responseApi = ResponseApi.fromJson(response.body);
+    return responseApi;
+  }
+
+  Future<ResponseApi> cutFavorite(int idProduct) async {
+    Response response = await put(
+      "$url/productModification",
+      {
+        "idUser": userSession.id,
+        "idProduct": idProduct,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+    print("response : ${response.body}");
+    ResponseApi responseApi = ResponseApi.fromJson(response.body);
+    return responseApi;
   }
 }

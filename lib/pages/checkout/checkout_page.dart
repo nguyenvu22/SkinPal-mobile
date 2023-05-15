@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -396,85 +398,93 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   Widget _buildPageView2(w, h) {
-    return Obx(
-      () => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          children: [
-            Text(
-              "PAYMENT",
-              style: GoogleFonts.aleo(
-                fontSize: w * 0.07,
-                fontWeight: FontWeight.w600,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        children: [
+          Text(
+            "PAYMENT",
+            style: GoogleFonts.aleo(
+              fontSize: w * 0.07,
+              fontWeight: FontWeight.w600,
             ),
-            SizedBox(
-              height: h * 0.05,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text(
-                          "Name",
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
+          ),
+          SizedBox(
+            height: h * 0.05,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Name",
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 50,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(left: 25),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: AppColor.secondaryColor,
-                          ),
-                        ),
-                        child: Text(
-                          widget.con.userSession.name!,
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(left: 25),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                          color: AppColor.secondaryColor,
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text(
-                          "Phone",
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      child: Text(
+                        widget.con.userSession.name!,
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Phone",
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      TextField(
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Obx(
+                      () => TextField(
                         controller: widget.con.phoneController,
                         keyboardType: TextInputType.text,
+                        onChanged: (newPhone) =>
+                            widget.con.checkPhoneValid(newPhone),
                         decoration: InputDecoration(
+                          suffixIcon: widget.con.isPhoneComplete.value
+                              ? const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                )
+                              : null,
                           hintText: "09********",
                           hintStyle: GoogleFonts.robotoSlab(
                             fontSize: 16,
@@ -490,31 +500,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text(
-                          "Address",
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Address",
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      TextField(
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Obx(
+                      () => TextField(
                         controller: widget.con.addressController,
                         keyboardType: TextInputType.text,
+                        onChanged: (newAddress) =>
+                            widget.con.checkAddressValid(newAddress),
                         decoration: InputDecoration(
+                          suffixIcon: widget.con.isAddressComplete.value
+                              ? const Icon(
+                                  Icons.check_circle,
+                                  color: Colors.green,
+                                )
+                              : null,
                           hintText: "To",
                           hintStyle: GoogleFonts.robotoSlab(
                             fontSize: 16,
@@ -530,184 +550,135 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text(
-                          "Payment Method",
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 15,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                // color: Colors.redAccent,
-                                borderRadius: BorderRadius.circular(50),
-                                border: Border.all(
-                                  width: 1,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: DropdownButton(
-                                borderRadius: BorderRadius.circular(
-                                  5,
-                                ),
-                                isExpanded: true,
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.caretDown,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
-                                value: dropdownValue,
-                                items: _dropdownItems(dropdownItems),
-                                onChanged: (option) {
-                                  setState(() {
-                                    dropdownValue = option!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 40,
-                          ),
-                          GestureDetector(
-                            onTap: () => widget.con.paymentProcess(context),
-                            child: const FaIcon(
-                              FontAwesomeIcons.creditCard,
-                              size: 30,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 50,
-              ),
-              width: double.infinity,
-              child: Row(
-                children: [
-                  Container(
-                    height: h * 0.08,
-                    alignment: Alignment.center,
-                    width: w * 0.15,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 10,
-                          ),
-                        ]),
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          currentIndex = 0;
-                        });
-                        controller.previousPage(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      child: Transform.rotate(
-                        angle: math.pi,
-                        child: const FaIcon(
-                          FontAwesomeIcons.arrowRightFromBracket,
-                          color: Colors.black,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        "Payment Method",
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: h * 0.08,
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(
-                        left: 30,
-                      ),
-                      child: GestureDetector(
-                        onTap: widget.con.isPayment.value
-                            ? () {
-                                widget.con.paymentSuccess();
-                                if (widget.con.isComplete.value) {
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              border: Border.all(
+                                width: 1,
+                                color: Colors.black,
+                              ),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: DropdownButton(
+                              borderRadius: BorderRadius.circular(
+                                5,
+                              ),
+                              isExpanded: true,
+                              icon: const FaIcon(
+                                FontAwesomeIcons.caretDown,
+                                color: Colors.black,
+                                size: 20,
+                              ),
+                              value: dropdownValue,
+                              items: _dropdownItems(dropdownItems),
+                              onChanged: (option) {
+                                setState(() {
+                                  dropdownValue = option!;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 40,
+                        ),
+                        Obx(
+                          () => AnimatedOpacity(
+                            opacity: widget.con.isPhoneComplete.value == true &&
+                                    widget.con.isAddressComplete.value == true
+                                ? 1
+                                : 0.3,
+                            duration: const Duration(milliseconds: 1000),
+                            child: GestureDetector(
+                              onTap: () async {
+                                await widget.con
+                                    .makePayment(context, controller)
+                                    .then((value) {
                                   setState(() {
                                     currentIndex = 2;
                                   });
-                                  controller.nextPage(
-                                    duration: const Duration(milliseconds: 500),
-                                    curve: Curves.easeInOut,
-                                  );
-                                }
-                              }
-                            : () {
-                                // widget.con.che;
+                                });
                               },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.linear,
-                          decoration: BoxDecoration(
-                            color: widget.con.isPayment.value
-                                ? AppColor.coreColor
-                                : Colors.grey,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Done!",
-                                  style: GoogleFonts.robotoSlab(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const FaIcon(
-                                  FontAwesomeIcons.arrowRightLong,
-                                  color: Colors.white,
-                                  size: 25,
-                                ),
-                              ],
+                              child: const FaIcon(
+                                FontAwesomeIcons.creditCard,
+                                size: 30,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                      ],
                     ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: h * 0.08,
+            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  currentIndex = 0;
+                });
+                controller.previousPage(
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: Container(
+                alignment: Alignment.center,
+                width: w * 0.15,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                      ),
+                    ]),
+                child: Transform.rotate(
+                  angle: math.pi,
+                  child: const FaIcon(
+                    FontAwesomeIcons.arrowRightFromBracket,
+                    color: Colors.black,
                   ),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

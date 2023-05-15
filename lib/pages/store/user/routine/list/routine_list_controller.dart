@@ -70,19 +70,6 @@ class RoutineListController extends GetxController {
     List<Routine> resultList = [];
 
     List<Routine> listRoutine = await routinesProvider.getAllRoutine();
-
-    // listRoutine.map((routine) {
-    //   routine.dayOfWeeks!.map((dayInWeek) {
-    //     if (dayInWeek == week) resultList.add(routine);
-    //   });
-    // });
-
-    // listRoutine.forEach((element) {
-    //   print("listRoutine : ${element.toJson()}");
-    // });
-
-    // print("week : ${week}");
-
     // Optimize
     resultList.addAll(
         listRoutine.where((routine) => routine.dayOfWeeks!.contains(week)));
