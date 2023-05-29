@@ -1,9 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:skinpal/core/const/colors.dart';
+import 'package:skinpal/helpers/number_helper.dart';
+import 'package:skinpal/models/blog.dart';
 import 'package:skinpal/models/product.dart';
 import 'package:skinpal/pages/store/home/home_controller.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -76,17 +79,39 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: h * 0.03,
               ),
-              CarouselSlider.builder(
-                itemCount: banners.length,
-                itemBuilder: (content, index, realIndex) =>
-                    _buildImage(banners[index], index),
-                options: CarouselOptions(
-                  // autoPlay: true,
-                  height: h * 0.3,
-                  onPageChanged: (index, reason) =>
-                      setState(() => activeIndex = index),
-                ),
-              ),
+              // CarouselSlider.builder(
+              //   // itemCount: banners.length,
+              //   itemCount: banners.length,
+              //   itemBuilder: (content, index, realIndex) =>
+              //       _buildImage(banners[index], index),
+              //   options: CarouselOptions(
+              //     // autoPlay: true,
+              //     height: h * 0.3,
+              //     onPageChanged: (index, reason) =>
+              //         setState(() => activeIndex = index),
+              //   ),
+              // ),
+              FutureBuilder(
+                  future: widget.con.getAllBlog(),
+                  builder: (context, AsyncSnapshot<List<Blog>> snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return CarouselSlider.builder(
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (content, index, realIndex) =>
+                              _buildBlogItem(snapshot.data![index], h),
+                          options: CarouselOptions(
+                            // autoPlay: true,
+                            height: h * 0.3,
+                            onPageChanged: (index, reason) =>
+                                setState(() => activeIndex = index),
+                          ),
+                        );
+                      }
+                      return Container();
+                    }
+                    return Container();
+                  }),
               SizedBox(
                 height: h * 0.02,
               ),
@@ -95,8 +120,107 @@ class _HomePageState extends State<HomePage> {
                 height: h * 0.03,
               ),
               _buildProductByCategory(w, h),
+              // _buildProductByCategory(w, h),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBlogItem(Blog blog, h) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      child: Bounce(
+        duration: const Duration(milliseconds: 200),
+        onPressed: () {
+          showModalBottomSheet(
+              context: context,
+              builder: (_) {
+                return SizedBox(
+                  // decoration: BoxDecoration(
+                  //   borderRadius: BorderRadius.only(
+                  //     topLeft: Radius.circular(40),
+                  //     topRight: Radius.circular(40),
+                  //   ),
+                  // ),
+                  height: h * 0.7,
+                  child: Column(
+                    children: [
+                      Image.network(
+                        blog.image!,
+                        fit: BoxFit.contain,
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10, left: 30, right: 30),
+                          child: Text(
+                            blog.description!,
+                            style: GoogleFonts.roboto(
+                              color: Colors.black,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              });
+        },
+        child: Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    spreadRadius: 1,
+                    blurRadius: 10,
+                    color: Colors.black45,
+                  )
+                ],
+              ),
+              width: double.infinity,
+              height: double.infinity,
+              child: Image.network(
+                blog.image!,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.contain,
+              ),
+            ),
+            Positioned(
+              top: 160,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                ),
+                padding: const EdgeInsets.all(15),
+                decoration: const BoxDecoration(
+                  color: Colors.black38,
+                ),
+                child: Text(
+                  blog.title!,
+                  style: GoogleFonts.robotoSlab(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -127,7 +251,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildIndicator() {
     return AnimatedSmoothIndicator(
-      count: banners.length,
+      count: 5,
       activeIndex: activeIndex,
       effect: ExpandingDotsEffect(
         dotColor: AppColor.inactiveColor.withOpacity(0.3),
@@ -229,12 +353,36 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   width: double.infinity,
                   height: 300,
                   child: TabBarView(
                     children: [
-                      Icon(Icons.access_alarm),
+                      // Icon(Icons.access_alarm),
+                      Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        margin: const EdgeInsets.only(top: 20),
+                        child: FutureBuilder(
+                          future: widget.con.getProductsWithAll(),
+                          builder:
+                              (context, AsyncSnapshot<List<Product>> snapshot) {
+                            if (snapshot.hasData) {
+                              if (snapshot.data!.isNotEmpty) {
+                                return ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: 5,
+                                  itemBuilder: (context, index) =>
+                                      _buildProductItem(
+                                          snapshot.data![index + 1]),
+                                );
+                              }
+                              return Container();
+                            }
+                            return Container();
+                          },
+                        ),
+                      ),
                       Icon(Icons.radar),
                       Icon(Icons.qr_code),
                     ],
@@ -244,6 +392,147 @@ class _HomePageState extends State<HomePage> {
                   // }).toList(),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProductItem(Product product) {
+    return Container(
+      width: 300,
+      // height: 250,
+      // padding: const EdgeInsets.all(10),
+      margin: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        // border: Border.all(
+        //   width: 2,
+        //   color: Colors.black87,
+        // ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+            spreadRadius: 1,
+            blurRadius: 5,
+            color: Colors.black26,
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Container(
+            width: double.infinity,
+            height: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                // boxShadow: [
+                //   BoxShadow(
+                //     spreadRadius: 1,
+                //     blurRadius: 10,
+                //     color: Colors.black38,
+                //   ),
+                // ],
+              ),
+              child: Image.network(
+                product.image!,
+                width: 150,
+                height: 150,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          Positioned(
+            top: 10,
+            right: 20,
+            child: Container(
+              width: 40,
+              height: 40,
+              alignment: Alignment.center,
+              // padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                color: AppColor.coreColor,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                "${product.discount!.toString()}%",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              width: double.infinity,
+              height: 120,
+              padding: const EdgeInsets.all(10),
+              decoration: const BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  )),
+              child: Column(
+                children: [
+                  Text(
+                    product.name!,
+                    maxLines: 2,
+                    overflow: TextOverflow.fade,
+                    style: GoogleFonts.robotoSlab(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "${NumberHelper.shortenedDouble(product.price!)}\$ ",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: GoogleFonts.robotoSlab(
+                          color: product.discount != 0
+                              ? Colors.white54
+                              : AppColor.coreColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          decoration: product.discount != 0
+                              ? TextDecoration.lineThrough
+                              : null,
+                          decorationStyle: product.discount != 0
+                              ? TextDecorationStyle.solid
+                              : null,
+                          decorationThickness:
+                              product.discount != 0 ? 2.0 : null,
+                          decorationColor:
+                              product.discount != 0 ? Colors.white60 : null,
+                        ),
+                      ),
+                      if (product.discount != 0)
+                        Text(
+                          " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                          style: GoogleFonts.robotoSlab(
+                            color: AppColor.coreColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ],

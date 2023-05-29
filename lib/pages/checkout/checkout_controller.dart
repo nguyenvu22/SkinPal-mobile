@@ -4,24 +4,27 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:skinpal/helpers/dialog_helper.dart';
 import 'package:skinpal/models/order.dart';
 import 'package:skinpal/models/product.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:skinpal/models/response_api.dart';
 import 'package:skinpal/models/user.dart';
+import 'package:skinpal/models/voucher.dart';
 import 'package:skinpal/pages/store/cart/cart_controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:skinpal/providers/orders_provider.dart';
 import 'package:async/async.dart';
+import 'package:skinpal/providers/users_provider.dart';
 
 class CheckoutController extends GetxController {
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
   List<Product> productInCart = [];
-  double totalPrice = 0.0;
+  List<Voucher> userVoucher = [];
+  var totalPrice = 0.0.obs;
+  var selectedVoucher = ''.obs;
   var isPhoneComplete = false.obs;
   var isAddressComplete = false.obs;
 
@@ -32,6 +35,7 @@ class CheckoutController extends GetxController {
   CartController cartController = Get.find();
 
   OrdersProvider ordersProvider = OrdersProvider();
+  UsersProvider usersProvider = UsersProvider();
 
   CheckoutController() {
     if (GetStorage().read("shoppingCart") != null) {
@@ -41,13 +45,34 @@ class CheckoutController extends GetxController {
         productInCart = Product.fromJsonList(GetStorage().read("shoppingCart"));
       }
     }
+    getUserVoucher();
     countTotal();
   }
 
+  void useVoucher(Voucher voucher) {
+    countTotal();
+    totalPrice.value *=
+        double.parse(((100 - voucher.discount!) / 100).toStringAsFixed(2));
+    // totalPrice.value = (totalPrice.value).toStringAsFixed(2);
+    selectedVoucher.value = voucher.id.toString();
+  }
+
+  void getUserVoucher() async {
+    userVoucher = await usersProvider.getUserVoucher();
+    userVoucher.forEach((element) {
+      print("element : ${element.toJson()}");
+    });
+  }
+
   void countTotal() {
-    totalPrice = 0;
+    totalPrice.value = 0;
     for (var p in productInCart) {
-      totalPrice += p.quantity! * p.price!;
+      if (p.discount != 0) {
+        totalPrice.value +=
+            p.quantity! * (p.price! * ((100 - p.discount!) / 100));
+      } else {
+        totalPrice.value += p.quantity! * p.price!;
+      }
     }
   }
 
@@ -99,7 +124,7 @@ class CheckoutController extends GetxController {
 
     Order takeOrder = Order(
       status: 0,
-      totalPrice: totalPrice,
+      totalPrice: totalPrice.value,
       address: addressController.text,
       phone: phoneController.text.trim(),
       idUser: userSession.id,
@@ -141,6 +166,10 @@ class CheckoutController extends GetxController {
         ),
       );
       // return;
+    }
+    if (selectedVoucher.value.isNotEmpty) {
+      ResponseApi responseApi =
+          await usersProvider.updateUsedVoucher(selectedVoucher.value);
     }
     DialogHelper.hideLoading();
   }

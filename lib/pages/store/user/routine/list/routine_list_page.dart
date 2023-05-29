@@ -8,6 +8,8 @@ import 'package:skinpal/core/const/colors.dart';
 import 'package:skinpal/models/routine.dart';
 import 'package:skinpal/pages/store/user/routine/list/routine_list_controller.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+import 'package:intl/intl.dart';
+import 'package:skinpal/widgets/no_data_widget.dart';
 
 class RoutineListPage extends StatefulWidget {
   RoutineListPage({super.key});
@@ -68,10 +70,12 @@ class _RoutineListPageState extends State<RoutineListPage>
 
   // Dont init normally by initState but async by FutureBuilder
   Future<void> initTabController() async {
-    widget.con.initController();
+    // widget.con.initController();
     if (tabController == null) {
       setState(() {
-        initIndex = weeklyDate.indexOf(widget.con.todayWeekly!);
+        // initIndex = weeklyDate.indexOf(widget.con.todayWeekly!);
+        initIndex =
+            weeklyDate.indexOf(DateFormat('EEEE').format(DateTime.now()));
         tabController = TabController(
           length: weeklyDate.length,
           vsync: this,
@@ -86,8 +90,6 @@ class _RoutineListPageState extends State<RoutineListPage>
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
-
-    final random = Random();
 
     widget.con.initController();
 
@@ -151,7 +153,7 @@ class _RoutineListPageState extends State<RoutineListPage>
                           SizedBox(
                             width: 30,
                             child: GestureDetector(
-                              onTap: () => Get.back(),
+                              onTap: () => Navigator.pop(context),
                               child: const Icon(
                                 Icons.arrow_back_ios,
                                 size: 30,
@@ -167,23 +169,36 @@ class _RoutineListPageState extends State<RoutineListPage>
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          Container(
-                            width: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              boxShadow: const [
-                                BoxShadow(
-                                  blurRadius: 1,
-                                  offset: Offset(0, 0),
-                                  spreadRadius: 2,
+                          Stack(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 0),
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Image.network(
-                              widget.con.userSession.avatar!,
-                              fit: BoxFit.cover,
-                              alignment: Alignment.center,
-                            ),
+                              ),
+                              Container(
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Image.network(
+                                  widget.con.userSession.avatar!,
+                                  fit: BoxFit.cover,
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -216,63 +231,53 @@ class _RoutineListPageState extends State<RoutineListPage>
                                 FutureBuilder(
                               future: initTabController(),
                               builder: ((context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else {
-                                  return TabBar(
-                                    controller: tabController,
-                                    indicatorColor: Colors.transparent,
-                                    indicator: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color:
-                                          AppColor.coreColor.withOpacity(0.3),
-                                    ),
-                                    labelColor: AppColor.coreColor,
-                                    tabs: weeklyDate.map(
-                                      (date) {
-                                        final index = weeklyDate.indexOf(date);
-                                        return Tab(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                date.split('')[0],
-                                                style: GoogleFonts.robotoSlab(
-                                                  color:
-                                                      selectedTabIndex == index
-                                                          ? AppColor.coreColor
-                                                          : Colors.black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
+                                return TabBar(
+                                  controller: tabController,
+                                  indicatorColor: Colors.transparent,
+                                  indicator: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    color: AppColor.coreColor.withOpacity(0.3),
+                                  ),
+                                  labelColor: AppColor.coreColor,
+                                  tabs: weeklyDate.map(
+                                    (date) {
+                                      final index = weeklyDate.indexOf(date);
+                                      return Tab(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              date.split('')[0],
+                                              style: GoogleFonts.robotoSlab(
+                                                color: selectedTabIndex == index
+                                                    ? AppColor.coreColor
+                                                    : Colors.black,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
                                               ),
-                                              Text(
-                                                widget.con.weekDates[index],
-                                                style: GoogleFonts.robotoSlab(
-                                                  color: selectedTabIndex ==
-                                                          index
-                                                      ? AppColor.coreColor
-                                                      : AppColor.secondaryColor,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
+                                            ),
+                                            Text(
+                                              widget.con.weekDates[index],
+                                              style: GoogleFonts.robotoSlab(
+                                                color: selectedTabIndex == index
+                                                    ? AppColor.coreColor
+                                                    : AppColor.secondaryColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
                                               ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ).toList(),
-                                    onTap: (index) {
-                                      setState(() {
-                                        selectedTabIndex = index;
-                                      });
+                                            ),
+                                          ],
+                                        ),
+                                      );
                                     },
-                                  );
-                                }
+                                  ).toList(),
+                                  onTap: (index) {
+                                    setState(() {
+                                      selectedTabIndex = index;
+                                    });
+                                  },
+                                );
                               }),
                             ),
                           ),
@@ -622,16 +627,8 @@ class _RoutineListPageState extends State<RoutineListPage>
                                                                             nearestRoutineTime
                                                                     ? Colors
                                                                         .white
-                                                                    : Color
-                                                                        .fromRGBO(
-                                                                        random.nextInt(
-                                                                            256),
-                                                                        random.nextInt(
-                                                                            256),
-                                                                        random.nextInt(
-                                                                            256),
-                                                                        1,
-                                                                      ),
+                                                                    : AppColor
+                                                                        .coreColor,
                                                                 width: 5,
                                                               ),
                                                               const SizedBox(
@@ -709,26 +706,6 @@ class _RoutineListPageState extends State<RoutineListPage>
                                                     ),
                                                   ),
                                                 ),
-                                                // index !=
-                                                //         routineSortedByTime
-                                                //                 .length -
-                                                //             1
-                                                //     ? routineSortedByTime[
-                                                //                     index + 1]
-                                                //                 ['time'] !=
-                                                //             routine['time']
-                                                //         ? Container(
-                                                //             width: 300,
-                                                //             height: 20,
-                                                //             color:
-                                                //                 Colors.black26,
-                                                //           )
-                                                //         : Container()
-                                                //     : Container(
-                                                //         width: 300,
-                                                //         height: 20,
-                                                //         color: Colors.black26,
-                                                //       ),
                                               ],
                                             ),
                                           );
@@ -779,9 +756,15 @@ class _RoutineListPageState extends State<RoutineListPage>
                                     ),
                                   );
                                 }
-                                return Container();
+                                return NoDataWidget(
+                                  text: "No routine for today",
+                                  img: "assets/images/empty_item.png",
+                                );
                               }
-                              return Container();
+                              return NoDataWidget(
+                                text: "No routine for today",
+                                img: "assets/images/empty_item.png",
+                              );
                             },
                           ),
                         ),

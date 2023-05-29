@@ -72,142 +72,186 @@ class _CartPageState extends State<CartPage> {
             )
           : NoDataWidget(
               text: "Your bag is empty.",
+              img: 'assets/images/no_item.png',
             ),
     );
   }
 
   Widget _buildListViewItem(Product product) {
-    return Container(
-      height: 160,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 10,
-      ),
-      decoration: const BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: AppColor.secondaryColor,
-            width: 1.0,
+    return Flexible(
+      child: Container(
+        // height: product.discount != 0 ? 180 : 160,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 20,
+        ),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: AppColor.secondaryColor,
+              width: 1.0,
+            ),
           ),
         ),
-      ),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => widget.con.goToProductDetail(product),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(120),
-                boxShadow: const [
-                  BoxShadow(
-                    spreadRadius: 1,
-                    blurRadius: 15,
-                    color: Colors.black12,
+        child: Row(
+          children: [
+            GestureDetector(
+              onTap: () => widget.con.goToProductDetail(product),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(120),
+                  boxShadow: const [
+                    BoxShadow(
+                      spreadRadius: 1,
+                      blurRadius: 15,
+                      color: Colors.black12,
+                    ),
+                  ],
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(120),
+                  child: Image.network(
+                    product.image!,
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
                   ),
-                ],
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(120),
-                child: Image.network(
-                  product.image!,
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 25,
-                vertical: 10,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 200,
-                        child: Text(
-                          product.name!,
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => widget.con.removeToCart(product),
-                        child: const FaIcon(
-                          FontAwesomeIcons.x,
-                          size: 16,
-                          color: AppColor.secondaryColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    product.description ?? '--',
-                    style: GoogleFonts.robotoSlab(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => widget.con.minusLessItem(product),
-                            child: const FaIcon(
-                              FontAwesomeIcons.minus,
-                              size: 16,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            product.quantity.toString(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 25,
+                  vertical: 10,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 200,
+                          child: Text(
+                            product.name!,
                             style: GoogleFonts.robotoSlab(
                               fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          GestureDetector(
-                            onTap: () => widget.con.plusMoreItem(product),
-                            child: const FaIcon(
-                              FontAwesomeIcons.plus,
-                              size: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        "\$${NumberHelper.shortenedDouble(product.price! * product.quantity!)}",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
                         ),
+                        GestureDetector(
+                          onTap: () => widget.con.removeToCart(product),
+                          child: const FaIcon(
+                            FontAwesomeIcons.x,
+                            size: 16,
+                            color: AppColor.secondaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 15,
+                        bottom: 10,
                       ),
-                    ],
-                  ),
-                ],
+                      child: Text(
+                        product.description ?? '--',
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (product.discount != 0)
+                      Chip(
+                        label: Text(
+                          "${product.discount!.toString()}%",
+                          style: GoogleFonts.robotoSlab(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        backgroundColor: AppColor.coreColor,
+                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () => widget.con.minusLessItem(product),
+                                child: const FaIcon(
+                                  FontAwesomeIcons.minus,
+                                  size: 16,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                product.quantity.toString(),
+                                style: GoogleFonts.robotoSlab(
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              GestureDetector(
+                                onTap: () => widget.con.plusMoreItem(product),
+                                child: const FaIcon(
+                                  FontAwesomeIcons.plus,
+                                  size: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          "\$${NumberHelper.shortenedDouble(product.price!)}  ",
+                          style: GoogleFonts.robotoSlab(
+                            color: product.discount != 0
+                                ? Colors.black38
+                                : Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            decoration: product.discount != 0
+                                ? TextDecoration.lineThrough
+                                : null,
+                            decorationStyle: product.discount != 0
+                                ? TextDecorationStyle.solid
+                                : null,
+                            decorationThickness:
+                                product.discount != 0 ? 2.0 : null,
+                            decorationColor:
+                                product.discount != 0 ? Colors.black38 : null,
+                          ),
+                        ),
+                        if (product.discount != 0)
+                          Text(
+                            "  ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        // Chip(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

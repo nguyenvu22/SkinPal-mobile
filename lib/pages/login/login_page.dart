@@ -259,21 +259,22 @@ class LoginPage extends StatelessWidget {
         con.loginWithGoogleAccount();
       },
       child: Container(
+        width: w * 0.35,
         decoration: BoxDecoration(
           color: const Color(0xFFD8D8D8).withOpacity(0.5),
           borderRadius: BorderRadius.circular(50),
         ),
-        padding: EdgeInsets.symmetric(
-          horizontal: w * 0.1,
-          vertical: h * 0.02,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 20,
         ),
         child: Row(
           children: [
             Image.asset("assets/images/google_image.png"),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
+            Expanded(
               child: Text(
                 "Google",
+                textAlign: TextAlign.center,
                 style: GoogleFonts.robotoSlab(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -293,6 +294,7 @@ class LoginPage extends StatelessWidget {
         DialogHelper.showLoading();
       },
       child: Container(
+        width: w * 0.35,
         decoration: BoxDecoration(
           color: const Color(0xFF3C5A9A),
           borderRadius: BorderRadius.circular(50),
@@ -305,18 +307,17 @@ class LoginPage extends StatelessWidget {
             ),
           ],
         ),
-        padding: EdgeInsets.symmetric(
-          horizontal: w * 0.1,
-          vertical: h * 0.02,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 25,
+          vertical: 20,
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Image.asset("assets/images/facebook_image.png"),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
+            Expanded(
               child: Text(
                 "Facebook",
+                textAlign: TextAlign.center,
                 style: GoogleFonts.robotoSlab(
                   color: Colors.white,
                   fontSize: 16,

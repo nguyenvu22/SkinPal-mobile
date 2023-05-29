@@ -14,6 +14,7 @@ class Product {
   double? price;
   // An object
   dynamic instruction;
+  int? discount;
   // An list object
   List<Avoidance>? avoidance = [];
   int? favorite;
@@ -26,6 +27,7 @@ class Product {
     this.description,
     this.price,
     this.instruction,
+    this.discount,
     this.avoidance,
     this.favorite,
     this.quantity,
@@ -46,6 +48,7 @@ class Product {
             jsonData["instruction"] != null && jsonData["instruction"] is String
                 ? json.decode(jsonData["instruction"])
                 : jsonData["instruction"],
+        discount: jsonData["discount"],
         avoidance: jsonData["avoidance"] != null
             ? jsonData["avoidance"] is String
                 ? List<Avoidance>.from(json.decode(jsonData["avoidance"]).map(
@@ -74,6 +77,7 @@ class Product {
         "description": description,
         "price": price,
         "instruction": instruction,
+        "discount": discount,
         "avoidance": List<dynamic>.from(avoidance!.map((x) => x)),
         "favorite": favorite,
         "quantity": quantity,

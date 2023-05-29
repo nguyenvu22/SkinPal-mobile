@@ -82,6 +82,8 @@ class RoutineListController extends GetxController {
   void goToCreateRoutine(BuildContext context) {
     modal.showMaterialModalBottomSheet(
       context: context,
+      isDismissible: false,   // Prevent closing by tapping outside the modal
+      enableDrag: false,      // Prevent closing by dragging down
       builder: (context) => RoutineCreatePage(),
     );
   }

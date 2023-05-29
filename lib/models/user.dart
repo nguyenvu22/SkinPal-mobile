@@ -43,7 +43,11 @@ class User {
         membership: json["membership"],
         isStudent: json["isStudent"],
         studentIdentificationImg: json["studentIdentificationImg"],
-        isPremium: json["isPremium"],
+        isPremium: json["isPremium"] != null
+            ? json["isPremium"] == 1
+                ? true
+                : false
+            : json["isPremium"],
         startPremium: json["startPremium"],
         endPremium: json["endPremium"],
       );

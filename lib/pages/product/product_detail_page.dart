@@ -166,7 +166,6 @@ class ProductDetailPage extends StatelessWidget {
 
   Widget _productDesc() {
     return Text(
-      // "AHA 30% + BHA 2% Peeling Solution exfoliates multiple layers of the skin for a brighter, more even appearance. With the help of alpha-hydroxy acids (AHA), beta-hydroxy acids (BHA), and a studied Tasmanian pepperberry derivative, which reduces irritation that can be associated with acid use, this at-home peel helps even skin texture, clear pore congestion, and improve uneven pigmentation. The formula is further supported with a crosspolymer form of hyaluronic acid for comfort, pro-vitamin B5 for hydration, and black carrot for added protection",
       con.product.description ?? 'No Description...',
       style: GoogleFonts.robotoSlab(
         fontSize: 15,

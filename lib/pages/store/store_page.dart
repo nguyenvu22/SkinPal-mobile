@@ -33,7 +33,7 @@ class _StorePageState extends State<StorePage> {
     SearchPage(),
     HomePage(navigationKey: navigationKey),
     ProfilePage(navigationKey: navigationKey),
-    ChatPage(),
+    // ChatPage(),
   ];
 
   @override
@@ -94,9 +94,9 @@ class _StorePageState extends State<StorePage> {
         color: Colors.white,
       ),
       Image.asset(
-        "assets/icons/icon_chat.png",
-        width: 30,
-        height: 30,
+        "assets/icons/icon_bot_chat.png",
+        width: 35,
+        height: 35,
         color: Colors.white,
       ),
     ];
@@ -126,9 +126,15 @@ class _StorePageState extends State<StorePage> {
         buttonBackgroundColor: const Color.fromARGB(255, 255, 85, 0),
         animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 600),
-        onTap: (index) => setState(() {
-          this.index = index;
-        }),
+        onTap: (index) {
+          if (index == 4) {
+            Get.toNamed("chatGpt");
+          } else {
+            setState(() {
+              this.index = index;
+            });
+          }
+        },
       ),
     );
   }

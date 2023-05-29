@@ -9,6 +9,7 @@ import 'package:skinpal/pages/onboard/onboard/onboard_page.dart';
 import 'package:skinpal/pages/onboard/splash/splash_page.dart';
 import 'package:skinpal/pages/product/product_detail_page.dart';
 import 'package:skinpal/pages/regist/regist_page.dart';
+import 'package:skinpal/pages/store/chat/chat_page.dart';
 import 'package:skinpal/pages/store/store_page.dart';
 import 'package:skinpal/pages/store/user/favorite/favorite_page.dart';
 import 'package:skinpal/pages/store/user/routine/list/routine_list_page.dart';
@@ -64,6 +65,7 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: "/login", page: () => LoginPage()),
         GetPage(name: "/regist", page: () => RegistPage()),
         GetPage(name: "/store", page: () => StorePage()),
+        GetPage(name: "/chatGpt", page: () => ChatPage()),
         GetPage(name: "/profileCustomization", page: () => UpdateProfilePage()),
         GetPage(name: "/favorite", page: () => FavortitePage()),
         GetPage(name: "/productDetail", page: () => ProductDetailPage()),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,7 +52,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ? GestureDetector(
                             onTap: () => Get.back(),
                             child: const FaIcon(
-                              FontAwesomeIcons.arrowLeft,
+                              FontAwesomeIcons.x,
                               size: 25,
                             ),
                           )
@@ -212,101 +213,246 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   Widget _buildPageView1(w, h) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        children: [
-          Text(
-            "CART",
-            style: GoogleFonts.aleo(
-              fontSize: w * 0.07,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(
-            height: h * 0.05,
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.con.productInCart.length,
-              itemBuilder: (context, index) =>
-                  _buildSingleItem(widget.con.productInCart[index]),
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.all(40),
-            child: Divider(
-              height: 1,
-              color: AppColor.secondaryColor,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Total",
-                  style: GoogleFonts.robotoSlab(
-                    color: AppColor.secondaryColor,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  "\$${NumberHelper.shortenedDouble(widget.con.totalPrice)}",
-                  style: GoogleFonts.robotoSlab(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            height: h * 0.08,
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  currentIndex = 1;
-                });
-                controller.nextPage(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColor.coreColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Address",
-                        style: GoogleFonts.robotoSlab(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const FaIcon(
-                        FontAwesomeIcons.arrowRightLong,
-                        color: Colors.white,
-                        size: 25,
-                      ),
-                    ],
-                  ),
-                ),
+    return Obx(
+      () => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          children: [
+            Text(
+              "CART",
+              style: GoogleFonts.aleo(
+                fontSize: w * 0.07,
+                fontWeight: FontWeight.w600,
               ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: h * 0.05,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.con.productInCart.length,
+                itemBuilder: (context, index) =>
+                    _buildSingleItem(widget.con.productInCart[index]),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(40),
+              child: Divider(
+                height: 1,
+                color: AppColor.secondaryColor,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Total",
+                    style: GoogleFonts.robotoSlab(
+                      color: AppColor.secondaryColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    "\$${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}",
+                    style: GoogleFonts.robotoSlab(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: h * 0.08,
+              margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              child: Row(
+                children: [
+                  Bounce(
+                    duration: const Duration(milliseconds: 200),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return AlertDialog(
+                              // backgroundColor: Colors.transparent,
+                              content: Container(
+                                width: w * 0.8,
+                                height: h * 0.7,
+                                decoration: const BoxDecoration(
+                                    // color: Colors.red,
+                                    ),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Voucher",
+                                        style: GoogleFonts.robotoSlab(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      ...widget.con.userVoucher.map(
+                                        (voucher) {
+                                          return Bounce(
+                                            duration: const Duration(
+                                                milliseconds: 200),
+                                            onPressed: () {
+                                              widget.con.useVoucher(voucher);
+                                            },
+                                            child: Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 20),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              decoration: BoxDecoration(
+                                                // color: Colors.greenAccent,
+                                                border: Border.all(
+                                                  width: 3,
+                                                  color: Colors.black26,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: w * 0.3,
+                                                    height: 200,
+                                                    child: Image.network(
+                                                      voucher.image!,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 30,
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          "Discount",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: GoogleFonts
+                                                              .robotoSlab(
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          "${voucher.discount}%",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: GoogleFonts
+                                                              .robotoSlab(
+                                                            fontSize: 22,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          "Expired in ${voucher.endDate!.difference(DateTime.now()).inDays} days",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: GoogleFonts
+                                                              .robotoSlab(
+                                                            fontSize: 18,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      // Expanded(
+                                      //   child: SizedBox(),
+                                      // ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              spreadRadius: 1,
+                              blurRadius: 10,
+                              color: Colors.black12,
+                            )
+                          ]),
+                      child: Image.asset(
+                        "assets/icons/icon_voucher.png",
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentIndex = 1;
+                        });
+                        controller.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          color: AppColor.coreColor,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Continue",
+                                style: GoogleFonts.robotoSlab(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const FaIcon(
+                                FontAwesomeIcons.arrowRightLong,
+                                color: Colors.white,
+                                size: 25,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -364,7 +510,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "\$${NumberHelper.shortenedDouble(product.price!)}",
+                        "\$${NumberHelper.shortenedDouble(product.discount != 0 ? product.price! * ((100 - product.discount!) / 100) : product.price!)}",
                         style: GoogleFonts.robotoSlab(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: 22,
@@ -378,7 +524,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          "x ${product.quantity!.toString()}",
+                          "x${product.quantity!.toString()}",
                           style: GoogleFonts.robotoSlab(
                             color: Colors.black.withOpacity(0.6),
                             // fontSize: ,
@@ -475,6 +621,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Obx(
                       () => TextField(
                         controller: widget.con.phoneController,
+                        maxLength: 10,
                         keyboardType: TextInputType.text,
                         onChanged: (newPhone) =>
                             widget.con.checkPhoneValid(newPhone),
@@ -584,23 +731,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: DropdownButton(
-                              borderRadius: BorderRadius.circular(
-                                5,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                borderRadius: BorderRadius.circular(
+                                  5,
+                                ),
+                                isExpanded: true,
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.caretDown,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
+                                value: dropdownValue,
+                                items: _dropdownItems(dropdownItems),
+                                onChanged: (option) {
+                                  setState(() {
+                                    dropdownValue = option!;
+                                  });
+                                },
                               ),
-                              isExpanded: true,
-                              icon: const FaIcon(
-                                FontAwesomeIcons.caretDown,
-                                color: Colors.black,
-                                size: 20,
-                              ),
-                              value: dropdownValue,
-                              items: _dropdownItems(dropdownItems),
-                              onChanged: (option) {
-                                setState(() {
-                                  dropdownValue = option!;
-                                });
-                              },
                             ),
                           ),
                         ),
@@ -659,20 +808,36 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 alignment: Alignment.center,
                 width: w * 0.15,
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 10,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      spreadRadius: 1,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Transform.rotate(
+                        angle: math.pi,
+                        child: const FaIcon(
+                          FontAwesomeIcons.arrowRightFromBracket,
+                          color: Colors.black,
+                        ),
                       ),
-                    ]),
-                child: Transform.rotate(
-                  angle: math.pi,
-                  child: const FaIcon(
-                    FontAwesomeIcons.arrowRightFromBracket,
-                    color: Colors.black,
+                      Text(
+                        "Back",
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

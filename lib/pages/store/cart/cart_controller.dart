@@ -98,7 +98,12 @@ class CartController extends GetxController {
   void countTotal() {
     totalPrice.value = 0;
     for (var p in productInCart) {
-      totalPrice.value += p.quantity! * p.price!;
+      if (p.discount != 0) {
+        totalPrice.value +=
+            p.quantity! * (p.price! * ((100 - p.discount!) / 100));
+      } else {
+        totalPrice.value += p.quantity! * p.price!;
+      }
     }
   }
 

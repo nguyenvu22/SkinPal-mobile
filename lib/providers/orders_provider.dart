@@ -15,7 +15,6 @@ class OrdersProvider extends GetConnect {
         "Content-Type": "application/json",
       },
     );
-    print("response : ${response.body}");
     ResponseApi responseApi = ResponseApi.fromJson(response.body);
     return responseApi;
   }
@@ -33,8 +32,6 @@ class OrdersProvider extends GetConnect {
         "Content-Type": "application/json",
       },
     );
-    print("response : ${response.body}");
-
     ResponseApi responseApi = ResponseApi.fromJson(response.body);
     return responseApi;
   }

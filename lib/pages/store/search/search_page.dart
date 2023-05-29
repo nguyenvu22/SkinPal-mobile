@@ -180,11 +180,13 @@ class _SearchPageState extends State<SearchPage> {
                           } else {
                             return NoDataWidget(
                               text: '0 item was found',
+                              img: "assets/images/empty_search_item.png",
                             );
                           }
                         } else {
                           return NoDataWidget(
                             text: '0 item was found',
+                            img: "assets/images/empty_search_item.png",
                           );
                         }
                       },
@@ -222,11 +224,13 @@ class _SearchPageState extends State<SearchPage> {
                             } else {
                               return NoDataWidget(
                                 text: '0 item was found',
+                                img: "assets/images/empty_search_item.png",
                               );
                             }
                           } else {
                             return NoDataWidget(
                               text: '0 item was found',
+                              img: "assets/images/empty_search_item.png",
                             );
                           }
                         },
@@ -319,23 +323,46 @@ class _SearchPageState extends State<SearchPage> {
             top: 10,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "${NumberHelper.shortenedDouble(product.price!)}\$",
+                "${NumberHelper.shortenedDouble(product.price!)}\$ ",
                 overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+                maxLines: 1,
                 style: GoogleFonts.robotoSlab(
+                  color: product.discount != 0
+                      ? Colors.black38
+                      : AppColor.coreColor,
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
+                  decoration:
+                      product.discount != 0 ? TextDecoration.lineThrough : null,
+                  decorationStyle:
+                      product.discount != 0 ? TextDecorationStyle.solid : null,
+                  decorationThickness: product.discount != 0 ? 2.0 : null,
+                  decorationColor:
+                      product.discount != 0 ? Colors.black38 : null,
                 ),
               ),
-              Bounce(
-                duration: const Duration(milliseconds: 200),
-                onPressed: () => widget.con.addToCart(product),
-                child: const FaIcon(
-                  FontAwesomeIcons.cartShopping,
-                  size: 24,
+              if (product.discount != 0)
+                Text(
+                  " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                  style: GoogleFonts.robotoSlab(
+                    color: AppColor.coreColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              Expanded(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Bounce(
+                    duration: const Duration(milliseconds: 200),
+                    onPressed: () => widget.con.addToCart(product),
+                    child: const FaIcon(
+                      FontAwesomeIcons.cartShopping,
+                      size: 24,
+                    ),
+                  ),
                 ),
               ),
             ],
