@@ -17,6 +17,7 @@ class User {
   bool? isPremium;
   String? startPremium;
   String? endPremium;
+  int? idSkinType;
 
   User({
     this.id,
@@ -31,6 +32,7 @@ class User {
     this.isPremium,
     this.startPremium,
     this.endPremium,
+    this.idSkinType
   });
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -50,6 +52,7 @@ class User {
             : json["isPremium"],
         startPremium: json["startPremium"],
         endPremium: json["endPremium"],
+        idSkinType: json["idSkinType"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +68,6 @@ class User {
         "isPremium": isPremium,
         "startPremium": startPremium,
         "endPremium": endPremium,
+        "idSkinType": idSkinType,
       };
 }

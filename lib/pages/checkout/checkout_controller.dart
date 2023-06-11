@@ -118,7 +118,7 @@ class CheckoutController extends GetxController {
   }
 
   paymentSuccess() async {
-    DialogHelper.showLoading("Preparing your order...");
+    DialogHelper.showLoading("Đang nhận đơn hàng...");
 
     await Future.delayed(const Duration(seconds: 1));
 

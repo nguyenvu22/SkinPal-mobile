@@ -59,7 +59,7 @@ class ProfilePage extends StatelessWidget {
                           () => Get.toNamed("/favorite"),
                         ),
                         _optionChoice(
-                          "assets/icons/icon_profile_favorite.png",
+                          "assets/icons/icon_survey.png",
                           "Khảo sát",
                           true,
                           () => Get.toNamed("/survey"),

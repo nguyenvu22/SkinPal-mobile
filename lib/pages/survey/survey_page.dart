@@ -23,12 +23,61 @@ class _SurveyPageState extends State<SurveyPage> {
     double h = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-        body: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: controller,
+        body: Stack(
           children: [
-            _buildPage1(w, h),
-            _buildPage2(w, h),
+            PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: controller,
+              children: [
+                _buildPage1(w, h),
+                _buildPage2(w, h),
+              ],
+            ),
+            Obx(
+              () => Positioned(
+                bottom: 20,
+                right: 20,
+                child: AnimatedOpacity(
+                  opacity: widget.con.countMap
+                              .where((value) => value.value == 0)
+                              .isEmpty &&
+                          !widget.con.isAnalyze.value
+                      ? 1
+                      : 0,
+                  duration: const Duration(milliseconds: 300),
+                  child: Bounce(
+                    duration: const Duration(milliseconds: 300),
+                    onPressed: () => widget.con.analyzing(controller),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 15,
+                        horizontal: 25,
+                      ),
+                      margin: const EdgeInsets.only(right: 10),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: AppColor.coreColor,
+                          boxShadow: const [
+                            BoxShadow(
+                              spreadRadius: 1,
+                              blurRadius: 15,
+                              color: Colors.black12,
+                            )
+                          ]),
+                      child: Text(
+                        "Analyze!",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.robotoSlab(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -36,27 +85,103 @@ class _SurveyPageState extends State<SurveyPage> {
   }
 
   Widget _buildPage2(w, h) {
-    return Column(
-      children: [
-        GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 25,
-            mainAxisSpacing: 35,
-            mainAxisExtent: 300,
+    return Obx(
+      () => Column(
+        children: [
+          SizedBox(
+            height: h * 0.05,
           ),
-          itemCount: 4,
-          itemBuilder: (_, index) => Column(
-            children: [
-              Image.network(widget.con.skinTypeList[index]['image']),
-              Text(
-                widget.con.skinTypeList[index]['name'],
-                style: GoogleFonts.robotoSlab(),
+          Text(
+            "Chuẩn đoán hoàn tất",
+            style: GoogleFonts.robotoSlab(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            "Bạn thuộc loại ${widget.con.skinTypeList[widget.con.resultId.value - 1]['name'].toUpperCase()}",
+            style: GoogleFonts.robotoSlab(
+              fontSize: 20,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: w * 0.1),
+            child: Text(
+                widget.con.skinTypeList[widget.con.resultId.value - 1]
+                    ['description'],
+                textAlign: TextAlign.center,
+                style: GoogleFonts.robotoSlab(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w400,
+                )),
+          ),
+          Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 40,
+                mainAxisSpacing: 50,
+                // mainAxisExtent: 300,
               ),
-            ],
+              itemCount: 4,
+              padding: EdgeInsets.only(
+                left: w * 0.1,
+                right: w * 0.1,
+                top: 50,
+              ),
+              itemBuilder: (_, index) => Container(
+                decoration: widget.con.resultId.value - 1 == index
+                    ? BoxDecoration(
+                        border: Border.all(color: AppColor.coreColor, width: 2),
+                        borderRadius: BorderRadius.circular(20),
+                      )
+                    : null,
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: Column(
+                  children: [
+                    Flexible(
+                      child: Image.network(
+                        widget.con.skinTypeList[index]['image'],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      widget.con.skinTypeList[index]['name'],
+                      style:
+                          GoogleFonts.robotoSlab(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      ],
+          GestureDetector(
+            onTap: () => Get.offNamedUntil("store", (route) => false),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 50),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+              decoration: BoxDecoration(
+                  color: AppColor.coreColor,
+                  borderRadius: BorderRadius.circular(50)),
+              child: Text(
+                "Xem sản phẩm phù hợp",
+                style: GoogleFonts.robotoSlab(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -89,39 +214,6 @@ class _SurveyPageState extends State<SurveyPage> {
                     color: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
-                    onTap: () => controller.nextPage(
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 15,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 1,
-                        ),
-                      ),
-                      child: Text(
-                        "Next",
-                        style: GoogleFonts.robotoSlab(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
@@ -257,104 +349,126 @@ class _SurveyPageState extends State<SurveyPage> {
           widget.con.addAnswer(page - 1, index + 1);
         },
         duration: const Duration(milliseconds: 300),
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 1,
-                spreadRadius: 3,
-                color: Colors.black12,
-                offset: Offset(0, 5),
-              )
-            ],
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: w * 0.25,
-                decoration: BoxDecoration(
-                  color: AppColor.coreColor,
-                  borderRadius: BorderRadius.circular(20),
+        child: Obx(
+          () => AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            decoration: BoxDecoration(
+              color: widget.con.countMap[page - 1] == index + 1
+                  ? AppColor.coreColor
+                  : Colors.white,
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 1,
+                  spreadRadius: 3,
+                  color: Colors.black12,
+                  offset: Offset(0, 5),
+                )
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: w * 0.25,
+                  height: w * 0.25,
+                  decoration: BoxDecoration(
+                    color: widget.con.countMap[page - 1] == index + 1
+                        ? Colors.white
+                        : AppColor.coreColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(
+                    left: 20,
+                  ),
+                  child: Image.network(widget.con.skinTypeList[index]['image']),
                 ),
-                padding: const EdgeInsets.all(10),
-                margin: const EdgeInsets.only(
-                  left: 20,
-                ),
-                child: Image.network(widget.con.skinTypeList[index]['image']),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 5),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 30, bottom: 5),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            widget.con.quesList[index][answer].split(":").first,
-                            style: GoogleFonts.robotoSlab(
-                              color: AppColor.coreColor,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 5, bottom: 5),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 30, bottom: 5),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              widget.con.quesList[index][answer]
+                                  .split(":")
+                                  .first,
+                              style: GoogleFonts.robotoSlab(
+                                color:
+                                    widget.con.countMap[page - 1] == index + 1
+                                        ? Colors.white
+                                        : AppColor.coreColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
                             ),
-                            maxLines: 1,
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 30,
-                          right: 20,
-                          bottom: 5,
-                        ),
-                        child: Text(
-                          widget.con.quesList[index]['$answer'].split(":").last,
-                          style: GoogleFonts.robotoSlab(
-                            fontSize: 14,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 30,
+                            right: 20,
+                            bottom: 5,
                           ),
-                          maxLines: 3,
+                          child: Text(
+                            widget.con.quesList[index]['$answer']
+                                .split(":")
+                                .last,
+                            style: GoogleFonts.robotoSlab(
+                              color: widget.con.countMap[page - 1] == index + 1
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 15,
+                            ),
+                            maxLines: 3,
+                          ),
                         ),
-                      ),
-                      const Divider(color: Colors.black38, thickness: 2),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 5,
-                          left: 30,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppColor.coreColor,
-                                ),
-                                child: const FaIcon(
-                                  FontAwesomeIcons.percent,
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Stack(
-                                children: [
-                                  Container(
-                                    width: 200,
-                                    height: 10,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black26,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
+                        const Divider(color: Colors.black38, thickness: 2),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 5,
+                            left: 30,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: widget.con.countMap[page - 1] ==
+                                            index + 1
+                                        ? Colors.white
+                                        : AppColor.coreColor,
                                   ),
-                                  Obx(
-                                    () => AnimatedContainer(
+                                  child: FaIcon(
+                                    FontAwesomeIcons.percent,
+                                    color: widget.con.countMap[page - 1] ==
+                                            index + 1
+                                        ? AppColor.coreColor
+                                        : Colors.white,
+                                    size: 15,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      width: 200,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black26,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    AnimatedContainer(
                                       duration:
                                           const Duration(milliseconds: 500),
                                       curve: Curves.easeInOut,
@@ -366,22 +480,25 @@ class _SurveyPageState extends State<SurveyPage> {
                                               4),
                                       height: 10,
                                       decoration: BoxDecoration(
-                                        color: AppColor.coreColor,
+                                        color: widget.con.countMap[page - 1] ==
+                                                index + 1
+                                            ? Colors.white
+                                            : AppColor.coreColor,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
