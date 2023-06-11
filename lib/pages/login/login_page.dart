@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skinpal/core/const/colors.dart';
 import 'package:skinpal/helpers/dialog_helper.dart';
 import 'package:skinpal/pages/login/login_controller.dart';
@@ -101,7 +100,7 @@ class LoginPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Login",
+                    "Đăng nhập",
                     style: GoogleFonts.robotoSlab(
                       color: AppColor.coreColor,
                       fontSize: w * 0.11,
@@ -112,7 +111,7 @@ class LoginPage extends StatelessWidget {
                     height: 30,
                   ),
                   Text(
-                    "Let's prepare for your beauty",
+                    "Chuẩn bị cho sắc đẹp của bạn",
                     style: GoogleFonts.robotoSlab(
                       color: const Color(0xFF757575),
                       fontSize: w * 0.035,
@@ -134,7 +133,7 @@ class LoginPage extends StatelessWidget {
       keyboardType: TextInputType.emailAddress,
       maxLength: 50,
       decoration: InputDecoration(
-        hintText: "What is your email?",
+        hintText: "Email đăng nhập",
         hintStyle: GoogleFonts.robotoSlab(
           fontSize: 17,
           fontWeight: FontWeight.w400,
@@ -167,12 +166,12 @@ class LoginPage extends StatelessWidget {
       obscureText: true,
       maxLength: 50,
       decoration: InputDecoration(
-        hintText: "****",
+        hintText: "***",
         hintStyle: GoogleFonts.robotoSlab(
           fontSize: 17,
           fontWeight: FontWeight.w400,
         ),
-        labelText: "Password",
+        labelText: "Mật khẩu",
         labelStyle: GoogleFonts.robotoSlab(
           fontSize: 22,
           fontWeight: FontWeight.w700,
@@ -219,7 +218,7 @@ class LoginPage extends StatelessWidget {
           ],
         ),
         child: Text(
-          "Login",
+          "Đăng nhập",
           style: GoogleFonts.acme(
             color: Colors.white,
             fontSize: w * 0.05,
@@ -240,7 +239,7 @@ class LoginPage extends StatelessWidget {
           color: const Color(0xFFBDBDBD),
         ),
         Text(
-          "or log in with",
+          "đăng nhập bằng",
           style: GoogleFonts.robotoSlab(),
         ),
         Container(
@@ -341,7 +340,7 @@ class LoginPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Don't you have an account?",
+            "Chưa có tài khoản?",
             style: GoogleFonts.robotoSlab(
               fontSize: 15,
             ),
@@ -349,7 +348,7 @@ class LoginPage extends StatelessWidget {
           GestureDetector(
             onTap: () => con.goToRegisterPage(),
             child: Text(
-              "  Regist now.",
+              "  Đăng kí ngay.",
               style: GoogleFonts.robotoSlab(
                 color: const Color.fromARGB(255, 241, 119, 58),
                 fontSize: 17,

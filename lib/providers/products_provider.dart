@@ -96,18 +96,24 @@ class ProductsProvider extends GetConnect {
     return responseApi;
   }
 
-  Future<ResponseApi> cutFavorite(int idProduct) async {
-    Response response = await put(
-      "$url/productModification",
-      {
-        "idUser": userSession.id,
-        "idProduct": idProduct,
-      },
+  Future<ResponseApi> deleteFavorite() async {
+    Response response = await delete(
+      "$url/favoriteRemoval/${userSession.id}",
       headers: {
         "Content-Type": "application/json",
       },
     );
-    print("response : ${response.body}");
+    ResponseApi responseApi = ResponseApi.fromJson(response.body);
+    return responseApi;
+  }
+
+  Future<ResponseApi> deleteSpecificFavorite(int idProduct) async {
+    Response response = await delete(
+      "$url/specificFavoriteRemoval/${userSession.id}/$idProduct",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
     ResponseApi responseApi = ResponseApi.fromJson(response.body);
     return responseApi;
   }

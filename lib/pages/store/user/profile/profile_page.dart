@@ -28,10 +28,10 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                "Profile",
+                "Hồ sơ",
                 style: GoogleFonts.robotoSlab(
                   color: AppColor.secondaryColor,
-                  fontSize: w * 0.1,
+                  fontSize: w * 0.08,
                 ),
               ),
               SizedBox(
@@ -42,232 +42,190 @@ class ProfilePage extends StatelessWidget {
                 height: h * 0.04,
               ),
               Expanded(
-                child: Container(
-                  // color: Colors.red,
-                  child: SingleChildScrollView(
-                    child: Obx(
-                      () => Column(
-                        children: [
+                child: SingleChildScrollView(
+                  child: Obx(
+                    () => Column(
+                      children: [
+                        _optionChoice(
+                          "assets/icons/icon_profile_person.png",
+                          "Thông tin cá nhân",
+                          true,
+                          () => Get.toNamed("/profileCustomization"),
+                        ),
+                        _optionChoice(
+                          "assets/icons/icon_profile_favorite.png",
+                          "Ưa thích",
+                          true,
+                          () => Get.toNamed("/favorite"),
+                        ),
+                        _optionChoice(
+                          "assets/icons/icon_profile_favorite.png",
+                          "Khảo sát",
+                          true,
+                          () => Get.toNamed("/survey"),
+                        ),
+                        _optionChoice(
+                          "assets/icons/icon_routine.png",
+                          "Liệu trình",
+                          true,
+                          () => Get.toNamed("/routine"),
+                        ),
+                        if (con.userSession.value.isPremium == false)
                           _optionChoice(
-                            "assets/icons/icon_profile_person.png",
-                            "Your Profile",
-                            true,
-                            () => Get.toNamed("/profileCustomization"),
+                            "assets/icons/icon_premium.png",
+                            "Nâng cấp premium",
+                            false,
+                            () => showDialog(
+                                context: context,
+                                builder: (_) => _diaLogPremium(w, h, context)),
                           ),
-                          _optionChoice(
-                            "assets/icons/icon_profile_favorite.png",
-                            "My favorites",
-                            true,
-                            () => Get.toNamed("/favorite"),
-                          ),
-                          _optionChoice(
-                            "assets/icons/icon_routine.png",
-                            "My Routine",
-                            true,
-                            () => Get.toNamed("/routine"),
-                          ),
-                          if (con.userSession.value.isPremium == false)
-                            _optionChoice(
-                              "assets/icons/icon_premium.png",
-                              "Go to Premium",
-                              false,
-                              () {
-                                showDialog(
-                                    context: context,
-                                    builder: (_) {
-                                      return AlertDialog(
-                                        backgroundColor: Colors.transparent,
-                                        content: SizedBox(
-                                          width: w * 0.6,
-                                          height: h * 0.4,
-                                          // color: Colors.red,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                top: 20 + w * 0.1,
-                                                bottom: 0,
-                                                left: 0,
-                                                right: 0,
-                                                child: Container(
-                                                  padding: EdgeInsets.only(
-                                                    top: 40 + w * 0.1,
-                                                    left: 30,
-                                                    right: 30,
-                                                    bottom: 30,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                bottom: 10),
-                                                        child: Text(
-                                                          "Being our premium member to unlock",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: GoogleFonts
-                                                              .robotoSlab(
-                                                            fontSize: 17,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        "● Better price & chat",
-                                                        // textAlign:
-                                                        //     TextAlign.left,
-                                                        style: GoogleFonts
-                                                            .robotoSlab(
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        "● Chat",
-                                                        // textAlign:
-                                                        //     TextAlign.center,
-                                                        style: GoogleFonts
-                                                            .robotoSlab(
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                      Expanded(
-                                                        child: Center(
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 10),
-                                                            child: Text(
-                                                              "With only 5\$/month",
-                                                              style: GoogleFonts
-                                                                  .robotoSlab(
-                                                                color: AppColor
-                                                                    .coreColor,
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Center(
-                                                        child: Bounce(
-                                                          duration:
-                                                              const Duration(
-                                                                  milliseconds:
-                                                                      200),
-                                                          onPressed: () {
-                                                            con.makePayment(
-                                                                context);
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                              vertical: 10,
-                                                              horizontal: 25,
-                                                            ),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .blueAccent,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                            ),
-                                                            child: Text(
-                                                              "Go Premium",
-                                                              style: GoogleFonts
-                                                                  .robotoSlab(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.topCenter,
-                                                  child: Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            20),
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            color: AppColor
-                                                                .coreColor,
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            boxShadow: [
-                                                          BoxShadow(
-                                                            spreadRadius: 1,
-                                                            blurRadius: 10,
-                                                            color:
-                                                                Colors.black12,
-                                                          )
-                                                        ]),
-                                                    child: Image.asset(
-                                                      "assets/images/go_to_premium.png",
-                                                      width: w * 0.2,
-                                                      height: w * 0.2,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    });
-                              },
-                            ),
-                          _optionChoice(
-                              "assets/icons/icon_profile_shopping_bag.png",
-                              "My Shopping Bag",
-                              true, () {
-                            final navigationState = navigationKey.currentState!;
-                            navigationState.setPage(0);
-                          }),
-                          _optionChoice(
-                              "assets/icons/icon_logout.png", "Logout", false,
-                              () {
-                            GetStorage().remove('user');
-                            Get.offNamedUntil("/login", (route) => false);
-                          }),
-                        ],
-                      ),
+                        _optionChoice(
+                            "assets/icons/icon_profile_shopping_bag.png",
+                            "Giỏ hàng",
+                            true, () {
+                          final navigationState = navigationKey.currentState!;
+                          navigationState.setPage(0);
+                        }),
+                        _optionChoice("assets/icons/icon_profile_chat.png",
+                            "Chat với chuyên gia", true, () {
+                          Get.toNamed('videoChat');
+                        }),
+                        _optionChoice(
+                            "assets/icons/icon_logout.png", "Đăng xuất", false,
+                            () {
+                          GetStorage().remove('user');
+                          Get.offNamedUntil("/login", (route) => false);
+                        }),
+                      ],
                     ),
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _diaLogPremium(double w, double h, context) {
+    return AlertDialog(
+      backgroundColor: Colors.transparent,
+      content: SizedBox(
+        width: w * 0.6,
+        height: h * 0.45,
+        child: Stack(
+          children: [
+            Positioned(
+              top: 20 + w * 0.1,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.only(
+                  top: 40 + w * 0.1,
+                  left: 30,
+                  right: 30,
+                  bottom: 30,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(
+                        "Trở thành thành viên vip để mở khóa",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.robotoSlab(
+                          fontSize: 17,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "● Giá ưu đãi",
+                      style: GoogleFonts.robotoSlab(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "● Chat",
+                      style: GoogleFonts.robotoSlab(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Chỉ với 10.000VNĐ/month",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.robotoSlab(
+                            color: AppColor.coreColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Bounce(
+                        duration: const Duration(milliseconds: 200),
+                        onPressed: () {
+                          con.makePayment(context);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 25,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blueAccent,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text(
+                            "Kích hoạt",
+                            style: GoogleFonts.robotoSlab(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                      color: AppColor.coreColor,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          color: Colors.black12,
+                        )
+                      ]),
+                  child: Image.asset(
+                    "assets/images/go_to_premium.png",
+                    width: w * 0.2,
+                    height: w * 0.2,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -347,7 +305,7 @@ class ProfilePage extends StatelessWidget {
                   Expanded(
                     child: Text.rich(
                       TextSpan(
-                        text: "Hello,\n",
+                        text: "Xin chào,\n",
                         style: GoogleFonts.robotoSlab(
                           color: AppColor.secondaryColor,
                           fontSize: w * 0.05,

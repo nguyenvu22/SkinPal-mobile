@@ -12,12 +12,16 @@ import 'package:skinpal/pages/regist/regist_page.dart';
 import 'package:skinpal/pages/store/chat/chat_page.dart';
 import 'package:skinpal/pages/store/store_page.dart';
 import 'package:skinpal/pages/store/user/favorite/favorite_page.dart';
+import 'package:skinpal/pages/store/user/routine/create/routine_create_page.dart';
 import 'package:skinpal/pages/store/user/routine/list/routine_list_page.dart';
 import 'package:skinpal/pages/store/user/update/update_profile_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:skinpal/pages/survey/survey_page.dart';
+import 'package:skinpal/pages/videoconference/video_conference_page.dart';
 
 User userSession = User.fromJson(GetStorage().read('user') ?? {});
+// List listFav = GetStorage().read('favorite');
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,6 +75,9 @@ class _MyAppState extends State<MyApp> {
         GetPage(name: "/productDetail", page: () => ProductDetailPage()),
         GetPage(name: "/checkout", page: () => CheckoutPage()),
         GetPage(name: "/routine", page: () => RoutineListPage()),
+        GetPage(name: "/routineCreate", page: () => RoutineCreatePage()),
+        GetPage(name: "/videoChat", page: () => VideoConferencePage(conferenceId: '1',)),
+        GetPage(name: "/survey", page: () => SurveyPage()),
       ],
       theme: ThemeData(
         primaryColor: const Color(0xFFF4AA85),

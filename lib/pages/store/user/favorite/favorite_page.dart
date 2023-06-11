@@ -25,13 +25,13 @@ class _FavortitePageState extends State<FavortitePage> {
         children: [
           Container(
             width: double.infinity,
-            margin: const EdgeInsets.only(left: 20, right: 20, top: 50),
+            margin: const EdgeInsets.only(left: 20, right: 20, top: 70),
             child: SingleChildScrollView(
               child: Column(
                 children: [
                   Text(
                     textAlign: TextAlign.center,
-                    "My Favorite",
+                    "Sản phẩm ưa thích",
                     style: GoogleFonts.robotoSlab(
                       fontSize: w * 0.07,
                       fontWeight: FontWeight.w300,
@@ -64,38 +64,27 @@ class _FavortitePageState extends State<FavortitePage> {
   }
 
   Widget _buildGridView(w, h) {
-    return FutureBuilder(
-      future: widget.con.getFavoriteProducts(),
-      builder: (context, AsyncSnapshot<List<Product>> snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data!.isNotEmpty) {
-            return GridView.builder(
-              //Custom item in a row
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 25,
-                mainAxisSpacing: 50,
-                mainAxisExtent: h * 0.3,
-              ),
-              shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
-              itemCount: snapshot.data!.length,
-              padding: const EdgeInsets.only(
-                left: 15,
-                right: 15,
-                top: 30,
-              ),
-              itemBuilder: (_, index) {
-                return _singleItem(h, snapshot.data![index]);
-              },
-            );
-          } else {
-            return Container();
-          }
-        } else {
-          return Container();
-        }
-      },
+    return Obx(
+      () => GridView.builder(
+        //Custom item in a row
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 25,
+          mainAxisSpacing: 50,
+          mainAxisExtent: h * 0.3,
+        ),
+        shrinkWrap: true,
+        // physics: const NeverScrollableScrollPhysics(),
+        itemCount: widget.con.productList.length,
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 15,
+          top: 30,
+        ),
+        itemBuilder: (_, index) {
+          return _singleItem(h, widget.con.productList[index]);
+        },
+      ),
     );
   }
 
@@ -128,7 +117,6 @@ class _FavortitePageState extends State<FavortitePage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: Image.network(
-                // "https://cdn.cliqueinc.com/posts/285756/best-skincare-brands-285756-1582682027978-main.700x0c.jpg",
                 product.image!,
                 width: double.infinity,
                 height: h * 0.2,
@@ -138,36 +126,33 @@ class _FavortitePageState extends State<FavortitePage> {
           ),
         ),
         Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {},
-                child: const FaIcon(
-                  FontAwesomeIcons.trashCan,
-                  color: AppColor.secondaryColor,
-                  size: 25,
+          child: Obx(
+            () => Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => widget.con.deleteFromFavorite(product.id!),
+                  child: const FaIcon(
+                    FontAwesomeIcons.trashCan,
+                    color: AppColor.secondaryColor,
+                    size: 25,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  if (product.favorite != null) {
-                    widget.con.cutFavorite(product.id!);
-                  } else {
-                    widget.con.addFavorite(product.id!);
-                  }
-                },
-                child: FaIcon(
-                  FontAwesomeIcons.solidHeart,
-                  size: 25,
-                  color:
-                      product.favorite != null ? const Color(0xFFeb5757) : null,
+                const SizedBox(
+                  width: 20,
                 ),
-              ),
-            ],
+                GestureDetector(
+                  // onTap: () => widget.con.favorite(product.id!),
+                  child: FaIcon(
+                    FontAwesomeIcons.solidHeart,
+                    size: 25,
+                    color: widget.con.favoriteList.contains(product.id)
+                        ? const Color(0xFFeb5757)
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],

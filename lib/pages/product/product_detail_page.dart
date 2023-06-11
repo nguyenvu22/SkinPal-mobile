@@ -6,10 +6,21 @@ import 'package:skinpal/core/const/colors.dart';
 import 'package:skinpal/helpers/number_helper.dart';
 import 'package:skinpal/pages/product/product_detail_controller.dart';
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   ProductDetailPage({super.key});
 
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
   ProductDetailController con = Get.put(ProductDetailController());
+
+  @override
+  void dispose() {
+    super.dispose();
+    con.updateFav();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +47,7 @@ class ProductDetailPage extends StatelessWidget {
                   ),
                   Center(
                     child: Text(
-                      "Product Detail",
+                      "Chi tiết sản phẩm",
                       style: GoogleFonts.robotoSlab(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -139,34 +150,39 @@ class ProductDetailPage extends StatelessWidget {
   }
 
   Widget _productFavPrice() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        con.product.favorite! != 0
-            ? const FaIcon(
-                FontAwesomeIcons.solidHeart,
-                size: 30,
-                color: Color(0xFFeb5757),
-              )
-            : const FaIcon(
-                FontAwesomeIcons.heart,
-                size: 30,
-                // color: Color(0xFFeb5757),
-              ),
-        Text(
-          "${NumberHelper.shortenedDouble(con.product.price!)} \$",
-          style: GoogleFonts.robotoSlab(
-            fontSize: 25,
-            fontWeight: FontWeight.w400,
+    return Obx(
+      () => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          GestureDetector(
+            onTap: () => con.favorite(con.product.id!),
+            child: con.favoriteList.contains(con.product.id)
+                ? const FaIcon(
+                    FontAwesomeIcons.solidHeart,
+                    size: 30,
+                    color: Color(0xFFeb5757),
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.heart,
+                    size: 30,
+                    // color: Color(0xFFeb5757),
+                  ),
           ),
-        ),
-      ],
+          Text(
+            "${NumberHelper.shortenedDouble(con.product.price!)} VNĐ",
+            style: GoogleFonts.robotoSlab(
+              fontSize: 25,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _productDesc() {
     return Text(
-      con.product.description ?? 'No Description...',
+      con.product.description ?? 'Mô tả...',
       style: GoogleFonts.robotoSlab(
         fontSize: 15,
         fontWeight: FontWeight.w400,
@@ -181,7 +197,7 @@ class ProductDetailPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "How to use",
+            "Cách sử dụng",
             style: GoogleFonts.robotoSlab(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -208,7 +224,7 @@ class ProductDetailPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "When to use",
+                      "Sử dụng khi",
                       style: GoogleFonts.robotoSlab(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -231,7 +247,7 @@ class ProductDetailPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Good for",
+                      "Sử dụng tốt cho",
                       style: GoogleFonts.robotoSlab(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -266,7 +282,7 @@ class ProductDetailPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(50),
           ),
           child: Text(
-            "DO NOT USE WITH",
+            "KHÔNG DÙNG CHUNG VỚI",
             textAlign: TextAlign.center,
             style: GoogleFonts.robotoSlab(
               color: Colors.white,
@@ -335,7 +351,7 @@ class ProductDetailPage extends StatelessWidget {
               width: 10,
             ),
             Text(
-              "BUY",
+              "Mua",
               style: GoogleFonts.robotoSlab(
                 color: Colors.white,
                 fontSize: 25,

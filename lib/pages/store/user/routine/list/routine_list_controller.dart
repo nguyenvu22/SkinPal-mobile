@@ -6,7 +6,7 @@ import 'package:skinpal/models/routine.dart';
 import 'package:skinpal/models/user.dart';
 import 'package:skinpal/pages/store/user/routine/create/routine_create_page.dart';
 import 'package:skinpal/providers/routines_provider.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
+// import 'package:modal_bottom_sheet/modal_bottom_sheet.dart' as modal;
 
 class RoutineListController extends GetxController {
   DateTime? currentDay;
@@ -79,12 +79,13 @@ class RoutineListController extends GetxController {
     return resultList;
   }
 
-  void goToCreateRoutine(BuildContext context) {
-    modal.showMaterialModalBottomSheet(
-      context: context,
-      isDismissible: false,   // Prevent closing by tapping outside the modal
-      enableDrag: false,      // Prevent closing by dragging down
-      builder: (context) => RoutineCreatePage(),
-    );
+  void goToCreateRoutine() {
+    // modal.showMaterialModalBottomSheet(
+    //   context: context,
+    //   isDismissible: false, // Prevent closing by tapping outside the modal
+    //   enableDrag: false, // Prevent closing by dragging down
+    //   builder: (context) => RoutineCreatePage(),
+    // );
+    Get.toNamed("/routineCreate");
   }
 }

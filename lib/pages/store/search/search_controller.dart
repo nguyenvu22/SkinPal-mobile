@@ -20,6 +20,7 @@ class SearchController extends GetxController {
 
   List<Category> categories = <Category>[].obs;
   List<Product> productInCart = [];
+  RxList<int> favoriteList = <int>[].obs;
 
   Timer? searchRefreshing;
 
@@ -34,6 +35,19 @@ class SearchController extends GetxController {
         productInCart = Product.fromJsonList(GetStorage().read("shoppingCart"));
       }
     }
+    if (GetStorage().read('favorite') != null) {
+      favoriteList =
+          (GetStorage().read('favorite') as List<dynamic>).cast<int>().obs;
+    }
+  }
+
+  void favorite(int productId) {
+    if (favoriteList.contains(productId)) {
+      favoriteList.remove(productId);
+    } else {
+      favoriteList.add(productId);
+    }
+    GetStorage().write('favorite', favoriteList);
   }
 
   void getCategories() async {

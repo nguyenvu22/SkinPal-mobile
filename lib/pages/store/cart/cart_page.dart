@@ -37,7 +37,7 @@ class _CartPageState extends State<CartPage> {
               ),
               Center(
                 child: Text(
-                  "My Shopping Bag",
+                  "Giỏ hàng",
                   style: GoogleFonts.robotoSlab(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class _CartPageState extends State<CartPage> {
               },
             )
           : NoDataWidget(
-              text: "Your bag is empty.",
+              text: "Chưa có sản phẩm.",
               img: 'assets/images/no_item.png',
             ),
     );
@@ -170,16 +170,19 @@ class _CartPageState extends State<CartPage> {
                       ),
                     ),
                     if (product.discount != 0)
-                      Chip(
-                        label: Text(
-                          "${product.discount!.toString()}%",
-                          style: GoogleFonts.robotoSlab(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Chip(
+                          label: Text(
+                            "- ${product.discount!.toString()}%",
+                            style: GoogleFonts.robotoSlab(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
+                          backgroundColor: AppColor.coreColor,
                         ),
-                        backgroundColor: AppColor.coreColor,
                       ),
                     Row(
                       children: [
@@ -237,13 +240,12 @@ class _CartPageState extends State<CartPage> {
                         ),
                         if (product.discount != 0)
                           Text(
-                            "  ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                            "  ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}VNĐ",
                             style: GoogleFonts.robotoSlab(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        // Chip(),
                       ],
                     ),
                   ],
@@ -265,7 +267,7 @@ class _CartPageState extends State<CartPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            "${widget.con.storeController.itemCounter.toString()} ${widget.con.storeController.itemCounter == 1 ? 'item' : 'items'}",
+            "Số lượng : ${widget.con.storeController.itemCounter.toString()} ",
             style: GoogleFonts.robotoSlab(
               fontSize: 20,
               fontWeight: FontWeight.w400,
@@ -290,7 +292,7 @@ class _CartPageState extends State<CartPage> {
                           alignment: Alignment.center,
                           child: Text(
                             widget.con.productInCart.isNotEmpty
-                                ? "\$${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}"
+                                ? "${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}VNĐ"
                                 : "",
                             style: GoogleFonts.robotoSlab(
                               fontSize: 20,
@@ -314,11 +316,11 @@ class _CartPageState extends State<CartPage> {
                     child: GestureDetector(
                       onTap: () => widget.con.goToCheckout(),
                       child: Text(
-                        "Buy now",
+                        "Mua ngay",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.robotoSlab(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.w400,
                         ),
                       ),

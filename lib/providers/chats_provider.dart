@@ -15,6 +15,12 @@ class ChatsProvider extends GetConnect {
         "Content-Type": "application/json",
       },
     );
+    if (response.body == null) {
+      return ResponseApi(
+        success: false,
+        message: "Sorry! We can not answer this question yet.",
+      );
+    }
     ResponseApi responseApi = ResponseApi.fromJson(response.body);
     return responseApi;
   }

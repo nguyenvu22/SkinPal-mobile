@@ -219,7 +219,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         child: Column(
           children: [
             Text(
-              "CART",
+              "Giỏ hàng",
               style: GoogleFonts.aleo(
                 fontSize: w * 0.07,
                 fontWeight: FontWeight.w600,
@@ -248,7 +248,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Total",
+                    "Tổng tiền",
                     style: GoogleFonts.robotoSlab(
                       color: AppColor.secondaryColor,
                       fontSize: 20,
@@ -256,7 +256,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                   ),
                   Text(
-                    "\$${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}",
+                    "${NumberHelper.shortenedDouble(widget.con.totalPrice.value)} VNĐ",
                     style: GoogleFonts.robotoSlab(
                       fontSize: 25,
                       fontWeight: FontWeight.w600,
@@ -289,7 +289,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   child: Column(
                                     children: [
                                       Text(
-                                        "Voucher",
+                                        "Khuyến mãi",
                                         style: GoogleFonts.robotoSlab(
                                           fontSize: 25,
                                           fontWeight: FontWeight.w500,
@@ -338,7 +338,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          "Discount",
+                                                          "Giảm giá",
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: GoogleFonts
@@ -347,7 +347,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          "${voucher.discount}%",
+                                                          "- ${voucher.discount}%",
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: GoogleFonts
@@ -358,7 +358,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                                           ),
                                                         ),
                                                         Text(
-                                                          "Expired in ${voucher.endDate!.difference(DateTime.now()).inDays} days",
+                                                          "Hết hạn sau ${voucher.endDate!.difference(DateTime.now()).inDays} ngày",
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: GoogleFonts
@@ -375,9 +375,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           );
                                         },
                                       ),
-                                      // Expanded(
-                                      //   child: SizedBox(),
-                                      // ),
                                     ],
                                   ),
                                 ),
@@ -430,7 +427,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "Continue",
+                                "Tiếp tục",
                                 style: GoogleFonts.robotoSlab(
                                   color: Colors.white,
                                   fontSize: 25,
@@ -510,11 +507,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "\$${NumberHelper.shortenedDouble(product.discount != 0 ? product.price! * ((100 - product.discount!) / 100) : product.price!)}",
+                        "${NumberHelper.shortenedDouble(product.discount != 0 ? product.price! * ((100 - product.discount!) / 100) : product.price!)}VNĐ",
                         style: GoogleFonts.robotoSlab(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: 22,
-                          // fontWeight: FontWeight.w500,
                         ),
                       ),
                       Container(
@@ -549,7 +545,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       child: Column(
         children: [
           Text(
-            "PAYMENT",
+            "Thanh toán",
             style: GoogleFonts.aleo(
               fontSize: w * 0.07,
               fontWeight: FontWeight.w600,
@@ -568,7 +564,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: Text(
-                        "Name",
+                        "Tên",
                         style: GoogleFonts.robotoSlab(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -608,7 +604,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: Text(
-                        "Phone",
+                        "Sđt",
                         style: GoogleFonts.robotoSlab(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -659,7 +655,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: Text(
-                        "Address",
+                        "Địa chỉ giao hàng",
                         style: GoogleFonts.robotoSlab(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -682,7 +678,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   color: Colors.green,
                                 )
                               : null,
-                          hintText: "To",
+                          hintText: "Đến",
                           hintStyle: GoogleFonts.robotoSlab(
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
@@ -709,7 +705,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 25),
                       child: Text(
-                        "Payment Method",
+                        "Hình thức thanh toán",
                         style: GoogleFonts.robotoSlab(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -831,7 +827,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ),
                       ),
                       Text(
-                        "Back",
+                        "Quay lại",
                         style: GoogleFonts.robotoSlab(
                           fontSize: 25,
                           fontWeight: FontWeight.w600,
@@ -861,7 +857,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           height: h * 0.01,
         ),
         Text(
-          "Your order is accepted !",
+          "Đã tiếp nhận đơn hàng !",
           style: GoogleFonts.robotoSlab(
             color: Colors.black,
             fontSize: 30,
@@ -875,7 +871,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           alignment: Alignment.center,
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Text(
-            "Have patience you can collect your order as soon as possible",
+            "Đơn hàng sẽ đến tay bạn trong thời gian ngắn nhất",
             textAlign: TextAlign.center,
             style: GoogleFonts.robotoSlab(
               color: Colors.black,
@@ -899,7 +895,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
             alignment: Alignment.center,
             child: Text(
-              "Need more? Let's do again",
+              "Quay lại cửa hàng",
               style: GoogleFonts.robotoSlab(
                 color: Colors.white,
                 fontSize: 22,

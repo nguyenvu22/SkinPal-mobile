@@ -88,6 +88,20 @@ class UsersProvider extends GetConnect {
     return responseApi;
   }
 
+  Future<ResponseApi> loginGoogle(User user) async {
+    Response response = await post(
+      '$url/loginGoogle',
+      user.toJson(),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.body == null) {}
+    ResponseApi responseApi = ResponseApi.fromJson(response.body);
+    return responseApi;
+  }
+
   Future<ResponseApi> update(User user) async {
     Response response = await put(
       "$url/modification",

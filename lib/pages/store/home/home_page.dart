@@ -138,12 +138,6 @@ class _HomePageState extends State<HomePage> {
               context: context,
               builder: (_) {
                 return SizedBox(
-                  // decoration: BoxDecoration(
-                  //   borderRadius: BorderRadius.only(
-                  //     topLeft: Radius.circular(40),
-                  //     topRight: Radius.circular(40),
-                  //   ),
-                  // ),
                   height: h * 0.7,
                   child: Column(
                     children: [

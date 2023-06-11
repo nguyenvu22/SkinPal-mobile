@@ -169,36 +169,14 @@ class _RoutineListPageState extends State<RoutineListPage>
                               textAlign: TextAlign.center,
                             ),
                           ),
-                          Stack(
-                            children: [
-                              Container(
-                                width: 50,
-                                height: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                  color: Colors.white,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 0),
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
+                          Material(
+                            elevation: 8,
+                            shape: const CircleBorder(),
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                widget.con.userSession.avatar!,
                               ),
-                              Container(
-                                width: 50,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(50),
-                                ),
-                                child: Image.network(
-                                  widget.con.userSession.avatar!,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -798,7 +776,7 @@ class _RoutineListPageState extends State<RoutineListPage>
                 : const Duration(milliseconds: 700),
             curve: toggle ? Curves.easeIn : Curves.easeOut,
             child: GestureDetector(
-              onTap: () => widget.con.goToCreateRoutine(context),
+              onTap: () => widget.con.goToCreateRoutine(),
               child: Container(
                 margin: const EdgeInsets.all(5),
                 child: AnimatedContainer(
@@ -844,7 +822,7 @@ class _RoutineListPageState extends State<RoutineListPage>
                 ),
                 child: Center(
                   child: FaIcon(
-                    FontAwesomeIcons.calendarPlus,
+                    FontAwesomeIcons.calendar,
                     size: size / 2,
                     color: Colors.white,
                   ),

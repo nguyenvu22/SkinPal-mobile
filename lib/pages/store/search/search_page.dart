@@ -21,6 +21,11 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
@@ -49,7 +54,7 @@ class _SearchPageState extends State<SearchPage> {
         // Dont have to have parentless since this event will fire every time something inside the text
         onChanged: widget.con.onTextChanging,
         decoration: InputDecoration(
-          hintText: "Searching...",
+          hintText: "Tìm kiếm...",
           hintStyle: GoogleFonts.robotoSlab(
             color: AppColor.secondaryColor,
           ),
@@ -95,7 +100,7 @@ class _SearchPageState extends State<SearchPage> {
               Row(
                 children: [
                   Text(
-                    "Type",
+                    "Loại",
                     style: GoogleFonts.robotoSlab(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -125,7 +130,7 @@ class _SearchPageState extends State<SearchPage> {
                         tabs: [
                           Tab(
                             child: Text(
-                              "All",
+                              "Tất cả",
                               style: GoogleFonts.robotoSlab(),
                             ),
                           ),
@@ -179,13 +184,13 @@ class _SearchPageState extends State<SearchPage> {
                             );
                           } else {
                             return NoDataWidget(
-                              text: '0 item was found',
+                              text: 'Không tìm thấy sản phẩm',
                               img: "assets/images/empty_search_item.png",
                             );
                           }
                         } else {
                           return NoDataWidget(
-                            text: '0 item was found',
+                            text: 'Không tìm thấy sản phẩm',
                             img: "assets/images/empty_search_item.png",
                           );
                         }
@@ -223,13 +228,13 @@ class _SearchPageState extends State<SearchPage> {
                               );
                             } else {
                               return NoDataWidget(
-                                text: '0 item was found',
+                                text: 'Không tìm thấy sản phẩm',
                                 img: "assets/images/empty_search_item.png",
                               );
                             }
                           } else {
                             return NoDataWidget(
-                              text: '0 item was found',
+                              text: 'Không tìm thấy sản phẩm',
                               img: "assets/images/empty_search_item.png",
                             );
                           }
@@ -251,55 +256,61 @@ class _SearchPageState extends State<SearchPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Material(
-          child: Stack(
-            children: [
-              GestureDetector(
-                onTap: () => widget.con.goToProductDetail(product),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 3,
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: FadeInImage(
-                      height: 180,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      placeholder:
-                          const AssetImage("assets/images/loading_image.png"),
-                      image: product.image != null
-                          ? NetworkImage(product.image!)
-                          : const AssetImage("assets/images/loading_image.png")
-                              as ImageProvider,
+          child: Obx(
+            () => Stack(
+              children: [
+                GestureDetector(
+                  onTap: () => widget.con.goToProductDetail(product),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      clipBehavior: Clip.antiAlias,
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 3,
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: FadeInImage(
+                        height: 180,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder:
+                            const AssetImage("assets/images/loading_image.png"),
+                        image: product.image != null
+                            ? NetworkImage(product.image!)
+                            : const AssetImage(
+                                    "assets/images/loading_image.png")
+                                as ImageProvider,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Positioned(
-                top: 20,
-                right: 20,
-                child: product.favorite! != 0
-                    ? const FaIcon(
-                        FontAwesomeIcons.solidHeart,
-                        color: Colors.red,
-                        size: 25,
-                      )
-                    : const FaIcon(
-                        FontAwesomeIcons.heart,
-                        size: 25,
-                      ),
-              ),
-            ],
+                Positioned(
+                  top: 20,
+                  right: 20,
+                  child: GestureDetector(
+                    onTap: () => widget.con.favorite(product.id!),
+                    child: widget.con.favoriteList.contains(product.id)
+                        ? const FaIcon(
+                            FontAwesomeIcons.solidHeart,
+                            color: Colors.red,
+                            size: 25,
+                          )
+                        : const FaIcon(
+                            FontAwesomeIcons.heart,
+                            size: 25,
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         Padding(
@@ -325,14 +336,14 @@ class _SearchPageState extends State<SearchPage> {
           child: Row(
             children: [
               Text(
-                "${NumberHelper.shortenedDouble(product.price!)}\$ ",
+                "${NumberHelper.shortenedDouble(product.price!)}${product.discount != 0 ? '' : 'VNĐ'} ",
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: GoogleFonts.robotoSlab(
                   color: product.discount != 0
                       ? Colors.black38
                       : AppColor.coreColor,
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w500,
                   decoration:
                       product.discount != 0 ? TextDecoration.lineThrough : null,
@@ -344,11 +355,17 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               if (product.discount != 0)
+                const FaIcon(
+                  FontAwesomeIcons.arrowRight,
+                  size: 15,
+                  color: Colors.black38,
+                ),
+              if (product.discount != 0)
                 Text(
-                  " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                  " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}VNĐ",
                   style: GoogleFonts.robotoSlab(
                     color: AppColor.coreColor,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

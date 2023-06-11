@@ -17,7 +17,7 @@ class Product {
   int? discount;
   // An list object
   List<Avoidance>? avoidance = [];
-  int? favorite;
+  // int? favorite;
   int? quantity;
 
   Product({
@@ -29,7 +29,7 @@ class Product {
     this.instruction,
     this.discount,
     this.avoidance,
-    this.favorite,
+    // this.favorite,
     this.quantity,
   });
 
@@ -57,7 +57,7 @@ class Product {
                 : List<Avoidance>.from(jsonData["avoidance"].map((model) =>
                     model is Avoidance ? model : Avoidance.fromJson(model)))
             : [],
-        favorite: jsonData["favorite"] ?? 0,
+        // favorite: jsonData["favorite"] ?? 0,
         quantity: jsonData["quantity"],
       );
 
@@ -79,7 +79,7 @@ class Product {
         "instruction": instruction,
         "discount": discount,
         "avoidance": List<dynamic>.from(avoidance!.map((x) => x)),
-        "favorite": favorite,
+        // "favorite": favorite,
         "quantity": quantity,
       };
 }

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:skinpal/models/response_api.dart';
+import 'package:skinpal/models/user.dart';
 import 'package:skinpal/providers/users_provider.dart';
 
 class LoginController extends GetxController {
@@ -49,10 +50,6 @@ class LoginController extends GetxController {
         );
       }
     }
-  }
-
-  void goToHomePage() {
-    Get.offNamedUntil("/store", (route) => false);
   }
 
   bool isValid(String email, String password) {
@@ -102,7 +99,7 @@ class LoginController extends GetxController {
     googleAccount.value = await googleSignIn.signIn();
 
     if (googleAccount.value == null) {
-      Get.snackbar("Loggin by Google fail", "Something went wrong!!");
+      Get.snackbar("Login by Google fail", "Something went wrong!!");
     } else {
       // GoogleSignInAccount:{
       //  displayName: Nguyen Trong Nguyen Vũ,
@@ -111,7 +108,33 @@ class LoginController extends GetxController {
       //  photoUrl: https://lh3.googleusercontent.com/a/AGNmyxbF0SIxWjRcyrw_2CrJpomlXIAYKqgcMbdRJs6N=s96-c, serverAuthCode: 4/0AVHEtk6cjXeUGc-cZO7goNd1tcN7sMR8Hj-BTuc7E3xO1K0l9qmHK6E10m5rsCCfg3bqUA
       // }
       print('GoogleAccount: ${googleAccount}');
+      User user = User(
+        email: googleAccount.value!.email,
+        password: '123',
+        avatar: googleAccount.value!.photoUrl,
+        name: googleAccount.value!.displayName,
+      );
+      ResponseApi responseApi = await usersProvider.loginGoogle(user);
+      if (responseApi.success == true) {
+        GetStorage().write('user', responseApi.data);
+        goToHomePage();
+      } else {
+        Get.snackbar(
+          "An error has occurred!",
+          responseApi.message ?? '',
+          borderWidth: 1,
+          borderColor: Colors.redAccent,
+          icon: const Icon(
+            Icons.error,
+            color: Colors.redAccent,
+          ),
+        );
+      }
     }
+  }
+
+  void goToHomePage() {
+    Get.offNamedUntil("/store", (route) => false);
   }
 
   void goToRegisterPage() {

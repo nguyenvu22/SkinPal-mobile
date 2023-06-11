@@ -89,33 +89,6 @@ class ProfileController extends GetxController {
   showPaymentSheet(context) async {
     try {
       await Stripe.instance.presentPaymentSheet().then((value) async {
-        // showDialog(
-        //   context: context,
-        //   builder: (_) => AlertDialog(
-        //     content: Column(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: [
-        //         Row(
-        //           children: [
-        //             const Icon(
-        //               Icons.check_circle,
-        //               color: Colors.green,
-        //             ),
-        //             Expanded(
-        //               child: Text(
-        //                 "Payment Successfully",
-        //                 textAlign: TextAlign.end,
-        //                 style: GoogleFonts.robotoSlab(
-        //                   fontWeight: FontWeight.w500,
-        //                 ),
-        //               ),
-        //             ),
-        //           ],
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // );
         paymentIntentData = null;
       }).onError((error, stackTrace) {
         print("Error at transaction part : $error - $stackTrace");
