@@ -30,29 +30,31 @@ class _CartPageState extends State<CartPage> {
       () => SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Column(
-            children: [
-              SizedBox(
-                height: h * 0.05,
-              ),
-              Center(
-                child: Text(
-                  "Giỏ hàng",
-                  style: GoogleFonts.robotoSlab(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: h * 0.05,
+                ),
+                Center(
+                  child: Text(
+                    "Giỏ hàng",
+                    style: GoogleFonts.robotoSlab(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: h * 0.03,
-              ),
-              _buildListView(w, h),
-              SizedBox(
-                height: h * 0.05,
-              ),
-              _buildCheckout(w, h),
-            ],
+                SizedBox(
+                  height: h * 0.03,
+                ),
+                _buildListView(w, h),
+                SizedBox(
+                  height: h * 0.05,
+                ),
+                _buildCheckout(w, h),
+              ],
+            ),
           ),
         ),
       ),
@@ -122,9 +124,9 @@ class _CartPageState extends State<CartPage> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
+                padding: const EdgeInsets.only(
+                  left: 25,
+                  top: 10,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,12 +261,11 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildCheckout(w, h) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
             "Số lượng : ${widget.con.storeController.itemCounter.toString()} ",
