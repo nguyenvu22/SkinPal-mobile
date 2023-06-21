@@ -134,7 +134,7 @@ class LoginController extends GetxController {
   }
 
   void goToHomePage() {
-    Get.offNamedUntil("/store", (route) => false);
+    Get.offNamedUntil("/survey", (route) => false);
   }
 
   void goToRegisterPage() {
