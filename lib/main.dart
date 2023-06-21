@@ -21,8 +21,6 @@ import 'package:skinpal/pages/survey/survey_page.dart';
 import 'package:skinpal/pages/videoconference/video_conference_page.dart';
 
 User userSession = User.fromJson(GetStorage().read('user') ?? {});
-// List listFav = GetStorage().read('favorite');
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
