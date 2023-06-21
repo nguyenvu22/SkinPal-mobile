@@ -30,28 +30,34 @@ class _CartPageState extends State<CartPage> {
       () => SafeArea(
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Column(
+          body: Stack(
             children: [
-              SizedBox(
-                height: h * 0.05,
-              ),
-              Center(
-                child: Text(
-                  "Giỏ hàng",
-                  style: GoogleFonts.robotoSlab(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              Column(
+                children: [
+                  SizedBox(
+                    height: h * 0.05,
                   ),
-                ),
+                  Center(
+                    child: Text(
+                      "Giỏ hàng",
+                      style: GoogleFonts.robotoSlab(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: h * 0.03,
+                  ),
+                  SizedBox(
+                    height: h * 0.6,
+                    child: _buildListView(w, h),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 24),
+                      child: _buildCheckout(w, h)),
+                ],
               ),
-              SizedBox(
-                height: h * 0.03,
-              ),
-              _buildListView(w, h),
-              SizedBox(
-                height: h * 0.05,
-              ),
-              _buildCheckout(w, h),
             ],
           ),
         ),
@@ -122,9 +128,9 @@ class _CartPageState extends State<CartPage> {
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 25,
-                  vertical: 10,
+                padding: const EdgeInsets.only(
+                  left: 25,
+                  top: 10,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,78 +265,82 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget _buildCheckout(w, h) {
-    return Container(
-      width: double.infinity,
-      height: 60,
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            "Số lượng : ${widget.con.storeController.itemCounter.toString()} ",
-            style: GoogleFonts.robotoSlab(
-              fontSize: 20,
-              fontWeight: FontWeight.w400,
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 12,
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        height: 60,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "Số lượng : ${widget.con.storeController.itemCounter.toString()} ",
+              style: GoogleFonts.robotoSlab(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          ),
-          Container(
-            width: w * 0.6,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              border: widget.con.productInCart.isNotEmpty
-                  ? Border.all(
-                      color: AppColor.coreColor,
-                      width: 2,
-                    )
-                  : null,
-            ),
-            child: Row(
-              children: [
-                widget.con.productInCart.isNotEmpty
-                    ? Flexible(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            widget.con.productInCart.isNotEmpty
-                                ? "${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}VNĐ"
-                                : "",
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
+            Container(
+              width: w * 0.6,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: widget.con.productInCart.isNotEmpty
+                    ? Border.all(
+                        color: AppColor.coreColor,
+                        width: 2,
+                      )
+                    : null,
+              ),
+              child: Row(
+                children: [
+                  widget.con.productInCart.isNotEmpty
+                      ? Flexible(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              widget.con.productInCart.isNotEmpty
+                                  ? "${NumberHelper.shortenedDouble(widget.con.totalPrice.value)}VNĐ"
+                                  : "",
+                              style: GoogleFonts.robotoSlab(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
-                        ),
-                      )
-                    : Container(),
-                Expanded(
-                  child: Container(
-                    height: double.infinity,
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    decoration: BoxDecoration(
-                      color: widget.con.productInCart.isNotEmpty
-                          ? AppColor.coreColor
-                          : AppColor.secondaryColor,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: GestureDetector(
-                      onTap: () => widget.con.goToCheckout(),
-                      child: Text(
-                        "Mua ngay",
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.robotoSlab(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
+                        )
+                      : Container(),
+                  Expanded(
+                    child: Container(
+                      height: double.infinity,
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(horizontal: 25),
+                      decoration: BoxDecoration(
+                        color: widget.con.productInCart.isNotEmpty
+                            ? AppColor.coreColor
+                            : AppColor.secondaryColor,
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: GestureDetector(
+                        onTap: () => widget.con.goToCheckout(),
+                        child: Text(
+                          "Mua ngay",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.robotoSlab(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

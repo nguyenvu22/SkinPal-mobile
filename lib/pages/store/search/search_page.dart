@@ -32,12 +32,10 @@ class _SearchPageState extends State<SearchPage> {
 
     return SafeArea(
       child: Scaffold(
-        body: Column(
+        appBar: _buildFeildSearch(),
+        body: ListView(
+          scrollDirection: Axis.vertical,
           children: [
-            SizedBox(
-              height: h * 0.02,
-            ),
-            _buildFeildSearch(),
             _buildCategoryOption(w, h),
           ],
         ),
@@ -45,42 +43,47 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildFeildSearch() {
-    return Container(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      child: TextField(
-        // Dont have to have parentless since this event will fire every time something inside the text
-        onChanged: widget.con.onTextChanging,
-        decoration: InputDecoration(
-          hintText: "Tìm kiếm...",
-          hintStyle: GoogleFonts.robotoSlab(
-            color: AppColor.secondaryColor,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 30,
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: const BorderSide(
-              color: AppColor.secondaryColor,
-              width: 2,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(50),
-            borderSide: const BorderSide(
-              color: AppColor.coreColor,
-              width: 2,
-            ),
-          ),
+  PreferredSizeWidget _buildFeildSearch() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(80),
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: 12,
+          left: 8,
+          right: 8,
         ),
-        style: GoogleFonts.robotoSlab(
-          fontSize: 20,
+        child: TextField(
+          // Dont have to have parentless since this event will fire every time something inside the text
+          onChanged: widget.con.onTextChanging,
+          decoration: InputDecoration(
+            hintText: "Tìm kiếm...",
+            hintStyle: GoogleFonts.robotoSlab(
+              color: AppColor.secondaryColor,
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 30,
+            ),
+            prefixIcon: const Icon(
+              Icons.search,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: const BorderSide(
+                color: AppColor.secondaryColor,
+                width: 2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(50),
+              borderSide: const BorderSide(
+                color: AppColor.coreColor,
+                width: 2,
+              ),
+            ),
+          ),
+          style: GoogleFonts.robotoSlab(
+            fontSize: 20,
+          ),
         ),
       ),
     );
@@ -362,7 +365,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               if (product.discount != 0)
                 Text(
-                  " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}VNĐ",
+                  "${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}VNĐ",
                   style: GoogleFonts.robotoSlab(
                     color: AppColor.coreColor,
                     fontSize: 16,
