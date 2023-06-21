@@ -806,8 +806,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Container(
                 width: double.infinity,
                 height: h * 0.08,
-                margin: EdgeInsets.symmetric(
-                    horizontal: 30, vertical: isIOS ? 30 : 50),
+                margin: EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                  bottom: isIOS ? 30 : 40,
+                ), //.symmetric(horizontal: 30, vertical: isIOS ? 30 : 50),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -908,8 +911,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Container(
             width: double.infinity,
             height: 60,
-            margin:
-                EdgeInsets.symmetric(horizontal: 40, vertical: isIOS ? 20 : 0),
+            margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             decoration: BoxDecoration(
               color: const Color(0xFFff4f5a),
               borderRadius: BorderRadius.circular(50),
