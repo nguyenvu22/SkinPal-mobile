@@ -31,6 +31,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   String dropdownValue = 'Visa';
   @override
   Widget build(BuildContext context) {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     return SafeArea(
@@ -201,8 +202,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 controller: controller,
                 children: [
                   _buildPageView1(w, h),
-                  _buildPageView2(w, h),
-                  _buildPageView3(w, h),
+                  _buildPageView2(w, h, isIOS),
+                  _buildPageView3(w, h, isIOS),
                 ],
               ),
             ),
@@ -421,12 +422,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           color: AppColor.coreColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
                                 "Tiếp tục",
                                 style: GoogleFonts.robotoSlab(
                                   color: Colors.white,
@@ -434,13 +436,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              const FaIcon(
-                                FontAwesomeIcons.arrowRightLong,
-                                color: Colors.white,
-                                size: 25,
-                              ),
-                            ],
-                          ),
+                            ),
+                            const FaIcon(
+                              FontAwesomeIcons.arrowRightLong,
+                              color: Colors.white,
+                              size: 25,
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -455,6 +457,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   Widget _buildSingleItem(Product product) {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     return Container(
       height: 160,
       margin: const EdgeInsets.only(
@@ -506,11 +509,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        "${NumberHelper.shortenedDouble(product.discount != 0 ? product.price! * ((100 - product.discount!) / 100) : product.price!)}VNĐ",
-                        style: GoogleFonts.robotoSlab(
-                          color: Colors.black.withOpacity(0.6),
-                          fontSize: 22,
+                      SizedBox(
+                        child: Text(
+                          "${NumberHelper.shortenedDouble(product.discount != 0 ? product.price! * ((100 - product.discount!) / 100) : product.price!)}VNĐ",
+                          style: GoogleFonts.robotoSlab(
+                            color: Colors.black.withOpacity(0.6),
+                            fontSize: isIOS ? 16 : 22,
+                          ),
                         ),
                       ),
                       Container(
@@ -539,312 +544,327 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
-  Widget _buildPageView2(w, h) {
+  Widget _buildPageView2(w, h, isIOS) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: Column(
-        children: [
-          Text(
-            "Thanh toán",
-            style: GoogleFonts.aleo(
-              fontSize: w * 0.07,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          SizedBox(
-            height: h * 0.05,
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints:
+              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+          child: Column(
+            children: [
+              Text(
+                "Thanh toán",
+                style: GoogleFonts.aleo(
+                  fontSize: w * 0.07,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              SizedBox(
+                height: h * 0.05,
+              ),
+              Expanded(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Text(
-                        "Tên",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: 50,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(left: 25),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        border: Border.all(
-                          color: AppColor.secondaryColor,
-                        ),
-                      ),
-                      child: Text(
-                        widget.con.userSession.name!,
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Text(
-                        "Sđt",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Obx(
-                      () => TextField(
-                        controller: widget.con.phoneController,
-                        maxLength: 10,
-                        keyboardType: TextInputType.text,
-                        onChanged: (newPhone) =>
-                            widget.con.checkPhoneValid(newPhone),
-                        decoration: InputDecoration(
-                          suffixIcon: widget.con.isPhoneComplete.value
-                              ? const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                )
-                              : null,
-                          hintText: "09********",
-                          hintStyle: GoogleFonts.robotoSlab(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 25,
-                            vertical: 15,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Text(
-                        "Địa chỉ giao hàng",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Obx(
-                      () => TextField(
-                        controller: widget.con.addressController,
-                        keyboardType: TextInputType.text,
-                        onChanged: (newAddress) =>
-                            widget.con.checkAddressValid(newAddress),
-                        decoration: InputDecoration(
-                          suffixIcon: widget.con.isAddressComplete.value
-                              ? const Icon(
-                                  Icons.check_circle,
-                                  color: Colors.green,
-                                )
-                              : null,
-                          hintText: "Đến",
-                          hintStyle: GoogleFonts.robotoSlab(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.always,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 25,
-                            vertical: 15,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25),
-                      child: Text(
-                        "Hình thức thanh toán",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              border: Border.all(
-                                width: 1,
-                                color: Colors.black,
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                borderRadius: BorderRadius.circular(
-                                  5,
-                                ),
-                                isExpanded: true,
-                                icon: const FaIcon(
-                                  FontAwesomeIcons.caretDown,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
-                                value: dropdownValue,
-                                items: _dropdownItems(dropdownItems),
-                                onChanged: (option) {
-                                  setState(() {
-                                    dropdownValue = option!;
-                                  });
-                                },
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: Text(
+                            "Tên",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                         const SizedBox(
-                          width: 40,
+                          height: 15,
                         ),
-                        Obx(
-                          () => AnimatedOpacity(
-                            opacity: widget.con.isPhoneComplete.value == true &&
-                                    widget.con.isAddressComplete.value == true
-                                ? 1
-                                : 0.3,
-                            duration: const Duration(milliseconds: 1000),
-                            child: GestureDetector(
-                              onTap: () async {
-                                await widget.con
-                                    .makePayment(context, controller)
-                                    .then((value) {
-                                  setState(() {
-                                    currentIndex = 2;
-                                  });
-                                });
-                              },
-                              child: const FaIcon(
-                                FontAwesomeIcons.creditCard,
-                                size: 30,
-                              ),
+                        Container(
+                          width: double.infinity,
+                          height: 50,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.only(left: 25),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(
+                              color: AppColor.secondaryColor,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 20,
+                          child: Text(
+                            widget.con.userSession.name!,
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            height: h * 0.08,
-            margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  currentIndex = 0;
-                });
-                controller.previousPage(
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
-                );
-              },
-              child: Container(
-                alignment: Alignment.center,
-                width: w * 0.15,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      spreadRadius: 1,
-                      blurRadius: 10,
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: Text(
+                            "Sđt",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Obx(
+                          () => TextField(
+                            controller: widget.con.phoneController,
+                            maxLength: 10,
+                            keyboardType: TextInputType.text,
+                            onChanged: (newPhone) =>
+                                widget.con.checkPhoneValid(newPhone),
+                            decoration: InputDecoration(
+                              suffixIcon: widget.con.isPhoneComplete.value
+                                  ? const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                    )
+                                  : null,
+                              hintText: "09********",
+                              hintStyle: GoogleFonts.robotoSlab(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 25,
+                                vertical: 15,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 25),
+                          child: Text(
+                            "Địa chỉ giao hàng",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Obx(
+                          () => TextField(
+                            controller: widget.con.addressController,
+                            keyboardType: TextInputType.text,
+                            onChanged: (newAddress) =>
+                                widget.con.checkAddressValid(newAddress),
+                            decoration: InputDecoration(
+                              suffixIcon: widget.con.isAddressComplete.value
+                                  ? const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                    )
+                                  : null,
+                              hintText: "Đến",
+                              hintStyle: GoogleFonts.robotoSlab(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 25,
+                                vertical: 15,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 25),
+                            child: Text(
+                              "Hình thức thanh toán",
+                              style: GoogleFonts.robotoSlab(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(50),
+                                    border: Border.all(
+                                      width: 1,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      borderRadius: BorderRadius.circular(
+                                        5,
+                                      ),
+                                      isExpanded: true,
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.caretDown,
+                                        color: Colors.black,
+                                        size: 20,
+                                      ),
+                                      value: dropdownValue,
+                                      items: _dropdownItems(dropdownItems),
+                                      onChanged: (option) {
+                                        setState(() {
+                                          dropdownValue = option!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 40,
+                              ),
+                              Obx(
+                                () => AnimatedOpacity(
+                                  opacity: widget.con.isPhoneComplete.value ==
+                                              true &&
+                                          widget.con.isAddressComplete.value ==
+                                              true
+                                      ? 1
+                                      : 0.3,
+                                  duration: const Duration(milliseconds: 1000),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      await widget.con
+                                          .makePayment(context, controller)
+                                          .then((value) {
+                                        setState(() {
+                                          currentIndex = 2;
+                                        });
+                                      });
+                                    },
+                                    child: const FaIcon(
+                                      FontAwesomeIcons.creditCard,
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Transform.rotate(
-                        angle: math.pi,
-                        child: const FaIcon(
-                          FontAwesomeIcons.arrowRightFromBracket,
-                          color: Colors.black,
+              ),
+              Container(
+                width: double.infinity,
+                height: h * 0.08,
+                margin: EdgeInsets.symmetric(
+                    horizontal: 30, vertical: isIOS ? 30 : 50),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      currentIndex = 0;
+                    });
+                    controller.previousPage(
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: w * 0.15,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 10,
                         ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Transform.rotate(
+                            angle: math.pi,
+                            child: const FaIcon(
+                              FontAwesomeIcons.arrowRightFromBracket,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            "Quay lại",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Quay lại",
-                        style: GoogleFonts.robotoSlab(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildPageView3(w, h) {
+  Widget _buildPageView3(w, h, isIOS) {
     return Column(
       children: [
         Flexible(
@@ -888,7 +908,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
           child: Container(
             width: double.infinity,
             height: 60,
-            margin: const EdgeInsets.symmetric(horizontal: 40),
+            margin:
+                EdgeInsets.symmetric(horizontal: 40, vertical: isIOS ? 20 : 0),
             decoration: BoxDecoration(
               color: const Color(0xFFff4f5a),
               borderRadius: BorderRadius.circular(50),
