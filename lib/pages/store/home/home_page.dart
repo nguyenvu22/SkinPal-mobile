@@ -269,7 +269,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                "Browse by Category",
+                "Gợi ý sản phẩm",
                 style: GoogleFonts.robotoSlab(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -281,7 +281,7 @@ class _HomePageState extends State<HomePage> {
                   navigationState.setPage(1);
                 },
                 child: Text(
-                  "View all",
+                  "Xem tất cả",
                   style: GoogleFonts.robotoSlab(
                     color: AppColor.secondaryColor,
                     fontSize: 17,
@@ -307,7 +307,7 @@ class _HomePageState extends State<HomePage> {
                     tabs: [
                       Tab(
                         child: Text(
-                          "Recommened",
+                          "Đề xuất",
                           style: GoogleFonts.robotoSlab(),
                         ),
                       ),
@@ -315,14 +315,14 @@ class _HomePageState extends State<HomePage> {
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Tab(
                           child: Text(
-                            "Treding",
+                            "Xu hướng",
                             style: GoogleFonts.robotoSlab(),
                           ),
                         ),
                       ),
                       Tab(
                         child: Text(
-                          "Sale",
+                          "Giảm giá",
                           style: GoogleFonts.robotoSlab(),
                         ),
                       ),
@@ -441,27 +441,28 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Positioned(
-            top: 10,
-            right: 20,
-            child: Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              // padding: const EdgeInsets.all(10),
-              decoration: const BoxDecoration(
-                color: AppColor.coreColor,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                "${product.discount!.toString()}%",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          if (product.discount! != 0)
+            Positioned(
+              top: 10,
+              right: 20,
+              child: Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.center,
+                // padding: const EdgeInsets.all(10),
+                decoration: const BoxDecoration(
+                  color: AppColor.coreColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Text(
+                  "-${product.discount!.toString()}%",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -493,7 +494,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
-                        "${NumberHelper.shortenedDouble(product.price!)}\$ ",
+                        "${NumberHelper.shortenedDouble(product.price!)} ${product.discount != 0 ? '' : 'VNĐ'}",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: GoogleFonts.robotoSlab(
@@ -516,7 +517,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       if (product.discount != 0)
                         Text(
-                          " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))}\$",
+                          " ${NumberHelper.shortenedDouble(product.price! - (product.price! * product.discount! / 100))} VNĐ",
                           style: GoogleFonts.robotoSlab(
                             color: AppColor.coreColor,
                             fontSize: 18,
