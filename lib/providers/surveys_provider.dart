@@ -5,13 +5,13 @@ import 'package:skinpal/models/response_api.dart';
 import 'package:skinpal/models/user.dart';
 
 class SurveysProvider extends GetConnect {
-  String url = "${Environment.GETX_API_URL}api/skin-type";
+  String url = "${Environment.GETX_API_URL}api";
 
   User userSession = User.fromJson(GetStorage().read('user') ?? {});
 
   Future<List> getAllQues() async {
     Response response = await get(
-      "$url/list-ans",
+      "$url/list-ans/skin-type",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,7 +26,7 @@ class SurveysProvider extends GetConnect {
 
   Future<List> getAllSkinType() async {
     Response response = await get(
-      "$url/list",
+      "$url/list/skin-type",
       headers: {
         "Content-Type": "application/json",
       },
@@ -40,7 +40,7 @@ class SurveysProvider extends GetConnect {
 
   Future<ResponseApi> updateUserSkinType(int idSkinType) async {
     Response response = await put(
-      "$url/update",
+      "$url/update/skin-type",
       {
         "idSkinType": idSkinType,
         "idUser": userSession.id,
