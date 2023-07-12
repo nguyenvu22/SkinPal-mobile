@@ -28,7 +28,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   int currentIndex = 0;
   List<dynamic> dropdownItems = [
     {'name': 'Visa', 'icon': 'assets/images/visa_payment.png'},
-    {'name': 'Momo', 'icon': 'assets/images/momo_payment.png'},
+    {'name': 'ViettelPay', 'icon': 'assets/images/viettel_payment.png'},
   ];
   String dropdownValue = 'Visa';
   @override
@@ -36,7 +36,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
     // TODO: implement initState
     super.initState();
     visaQR = Image.asset('assets/images/techcombank.png');
-    momoQR = Image.asset('assets/images/momo.png');
+    momoQR = Image.asset('assets/images/viettelpay.png');
   }
 
   @override
