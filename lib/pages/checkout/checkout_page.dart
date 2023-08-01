@@ -23,12 +23,22 @@ class CheckoutPage extends StatefulWidget {
 
 class _CheckoutPageState extends State<CheckoutPage> {
   final controller = PageController();
+  late Image visaQR;
+  late Image momoQR;
   int currentIndex = 0;
   List<dynamic> dropdownItems = [
     {'name': 'Visa', 'icon': 'assets/images/visa_payment.png'},
-    {'name': 'Momo', 'icon': 'assets/images/momo_payment.png'},
+    {'name': 'ViettelPay', 'icon': 'assets/images/viettel_payment.png'},
   ];
   String dropdownValue = 'Visa';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    visaQR = Image.asset('assets/images/techcombank.png');
+    momoQR = Image.asset('assets/images/viettelpay.png');
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
@@ -549,9 +559,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 1.2),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 "Thanh toán",
@@ -563,244 +576,218 @@ class _CheckoutPageState extends State<CheckoutPage> {
               SizedBox(
                 height: h * 0.05,
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25),
-                          child: Text(
-                            "Tên",
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 50,
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.only(left: 25),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            border: Border.all(
-                              color: AppColor.secondaryColor,
-                            ),
-                          ),
-                          child: Text(
-                            widget.con.userSession.name!,
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
+              Text(
+                "Tên",
+                style: GoogleFonts.robotoSlab(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Container(
+                width: double.infinity,
+                height: 50,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 25),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                    color: AppColor.secondaryColor,
+                  ),
+                ),
+                child: Text(
+                  widget.con.userSession.name!,
+                  style: GoogleFonts.robotoSlab(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                "Sđt",
+                style: GoogleFonts.robotoSlab(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Obx(
+                () => TextField(
+                  controller: widget.con.phoneController,
+                  maxLength: 10,
+                  keyboardType: TextInputType.text,
+                  onChanged: (newPhone) => widget.con.checkPhoneValid(newPhone),
+                  decoration: InputDecoration(
+                    suffixIcon: widget.con.isPhoneComplete.value
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          )
+                        : null,
+                    hintText: "09********",
+                    hintStyle: GoogleFonts.robotoSlab(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 25,
+                      vertical: 15,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                "Địa chỉ giao hàng",
+                style: GoogleFonts.robotoSlab(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Obx(
+                () => TextField(
+                  controller: widget.con.addressController,
+                  keyboardType: TextInputType.text,
+                  onChanged: (newAddress) =>
+                      widget.con.checkAddressValid(newAddress),
+                  decoration: InputDecoration(
+                    suffixIcon: widget.con.isAddressComplete.value
+                        ? const Icon(
+                            Icons.check_circle,
+                            color: Colors.green,
+                          )
+                        : null,
+                    hintText: "Đến",
+                    hintStyle: GoogleFonts.robotoSlab(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 25,
+                      vertical: 15,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Text(
+                "Hình thức thanh toán",
+                style: GoogleFonts.robotoSlab(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.black,
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton(
+                    borderRadius: BorderRadius.circular(
+                      5,
+                    ),
+                    isExpanded: true,
+                    icon: const FaIcon(
+                      FontAwesomeIcons.caretDown,
+                      color: Colors.black,
+                      size: 20,
+                    ),
+                    value: dropdownValue,
+                    items: _dropdownItems(dropdownItems),
+                    onChanged: (option) {
+                      setState(() {
+                        dropdownValue = option!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 48,
+              ),
+              Container(
+                width: double.infinity,
+                height: h * 0.08,
+                margin: EdgeInsets.only(
+                  left: 30,
+                  right: 30,
+                  bottom: isIOS ? 30 : 40,
+                ),
+                //.symmetric(horizontal: 30, vertical: isIOS ? 30 : 50),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext buildContext) =>
+                            _qrCode(context, dropdownValue));
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    width: w * 0.15,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 10,
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25),
-                          child: Text(
-                            "Sđt",
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Obx(
-                          () => TextField(
-                            controller: widget.con.phoneController,
-                            maxLength: 10,
-                            keyboardType: TextInputType.text,
-                            onChanged: (newPhone) =>
-                                widget.con.checkPhoneValid(newPhone),
-                            decoration: InputDecoration(
-                              suffixIcon: widget.con.isPhoneComplete.value
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                    )
-                                  : null,
-                              hintText: "09********",
-                              hintStyle: GoogleFonts.robotoSlab(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 25,
-                                vertical: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 25),
-                          child: Text(
-                            "Địa chỉ giao hàng",
-                            style: GoogleFonts.robotoSlab(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Obx(
-                          () => TextField(
-                            controller: widget.con.addressController,
-                            keyboardType: TextInputType.text,
-                            onChanged: (newAddress) =>
-                                widget.con.checkAddressValid(newAddress),
-                            decoration: InputDecoration(
-                              suffixIcon: widget.con.isAddressComplete.value
-                                  ? const Icon(
-                                      Icons.check_circle,
-                                      color: Colors.green,
-                                    )
-                                  : null,
-                              hintText: "Đến",
-                              hintStyle: GoogleFonts.robotoSlab(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 25,
-                                vertical: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Flexible(
-                      flex: 2,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 25),
-                            child: Text(
-                              "Hình thức thanh toán",
-                              style: GoogleFonts.robotoSlab(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          Transform.rotate(
+                            angle: math.pi,
+                            child: const FaIcon(
+                              FontAwesomeIcons.addressCard,
+                              color: Colors.black,
                             ),
                           ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(
-                                      width: 1,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton(
-                                      borderRadius: BorderRadius.circular(
-                                        5,
-                                      ),
-                                      isExpanded: true,
-                                      icon: const FaIcon(
-                                        FontAwesomeIcons.caretDown,
-                                        color: Colors.black,
-                                        size: 20,
-                                      ),
-                                      value: dropdownValue,
-                                      items: _dropdownItems(dropdownItems),
-                                      onChanged: (option) {
-                                        setState(() {
-                                          dropdownValue = option!;
-                                        });
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 40,
-                              ),
-                              Obx(
-                                () => AnimatedOpacity(
-                                  opacity: widget.con.isPhoneComplete.value ==
-                                              true &&
-                                          widget.con.isAddressComplete.value ==
-                                              true
-                                      ? 1
-                                      : 0.3,
-                                  duration: const Duration(milliseconds: 1000),
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      await widget.con
-                                          .makePayment(context, controller)
-                                          .then((value) {
-                                        setState(() {
-                                          currentIndex = 2;
-                                        });
-                                      });
-                                    },
-                                    child: const FaIcon(
-                                      FontAwesomeIcons.creditCard,
-                                      size: 30,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                            ],
+                          Text(
+                            "Thanh toán",
+                            style: GoogleFonts.robotoSlab(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
               Container(
@@ -810,7 +797,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   left: 30,
                   right: 30,
                   bottom: isIOS ? 30 : 40,
-                ), //.symmetric(horizontal: 30, vertical: isIOS ? 30 : 50),
+                ),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -928,6 +915,66 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _qrCode(BuildContext context, String dropDownValue) {
+    Size size = MediaQuery.of(context).size;
+    return AlertDialog(
+      content: Container(
+        height: size.height * 0.7,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const SizedBox(
+              height: 44,
+            ),
+            Text(
+              "Doan Nguyen Vu Huy",
+              style: GoogleFonts.robotoSlab(
+                color: Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: 36,
+            ),
+            dropDownValue == 'Visa' ? visaQR : momoQR,
+            const SizedBox(
+              height: 24,
+            ),
+            Container(
+              width: size.width * 0.8,
+              height: 40,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(100)),
+              ),
+              child: ElevatedButton(
+                onPressed: () async {
+                  await widget.con
+                      .makePayment(context, controller)
+                      .then((value) {
+                    setState(() {
+                      currentIndex = 2;
+                    });
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text(
+                  "Hoàn Thành",
+                  style: GoogleFonts.robotoSlab(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 
