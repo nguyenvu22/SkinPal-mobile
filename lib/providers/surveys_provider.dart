@@ -11,7 +11,8 @@ class SurveysProvider extends GetConnect {
 
   Future<List> getAllQues() async {
     Response response = await get(
-      "$url/list-ans/skin-type",
+      // "$url/list-ans/skin-type",
+      "$url/skin-type/list-ans",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,7 +27,8 @@ class SurveysProvider extends GetConnect {
 
   Future<List> getAllSkinType() async {
     Response response = await get(
-      "$url/list/skin-type",
+      // "$url/list/skin-type",
+      "$url/skin-type/list",
       headers: {
         "Content-Type": "application/json",
       },
@@ -40,7 +42,8 @@ class SurveysProvider extends GetConnect {
 
   Future<ResponseApi> updateUserSkinType(int idSkinType) async {
     Response response = await put(
-      "$url/update/skin-type",
+      // "$url/update/skin-type",
+      "$url/skin-type/update",
       {
         "idSkinType": idSkinType,
         "idUser": userSession.id,

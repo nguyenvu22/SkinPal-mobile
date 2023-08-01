@@ -43,10 +43,12 @@ class SurveyController extends GetxController {
 
   Future<void> getSkinType() async {
     skinTypeList = await surveysProvider.getAllSkinType();
+    // print(skinTypeList);
   }
 
   Future<void> getSkinTypeQues() async {
     quesList = await surveysProvider.getAllQues();
+    print(quesList);
   }
 
   void analyzing(PageController controller) {
